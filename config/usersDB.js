@@ -18,15 +18,21 @@ module.exports = (sequelize, Sequelize) => {
         },
         email: {
             type: Sequelize.STRING
-        }
-        ,
+        },
         is_verified: {
             type: Sequelize.BOOLEAN,
             defaultValue: false
+        },
+        created_at: {
+            type: Sequelize.DATE
+        },
+        updated_at: {
+            type: Sequelize.DATE
         }
     }, {
         schema: 'todo',
-        timestamps: false,
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
     });
     return user;
 };

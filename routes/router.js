@@ -2,6 +2,8 @@ const router = require('express').Router();
 const baseAuthentication = require('../util/auth.js');
 const userController = require('../Controller/usersController.js');
 
+const listsController = require('../Controller/usersController.js');
+
 // GET Method
 
 router.get("/healthz", (req, res) => {
@@ -20,5 +22,8 @@ router.get("/v1/user/self", baseAuthentication() , userController.getUser);
 // PUT Method
 
 router.put("/v1/user/self", baseAuthentication() , userController.updateUser);
+
+//Add List
+router.post("/v1/user/list", baseAuthentication(), userController.createUser);
 
 module.exports = router; 
