@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS todo.Users
     email character varying(50) NOT NULL UNIQUE,
     password character varying(200) NOT NULL,
     is_verified boolean DEFAULT FALSE,
-    createdAt timestamp,
-    updatedAt timestamp,
+    created_at timestamp,
+    updated_at timestamp,
     id character varying(100) PRIMARY KEY
 );
 
@@ -18,8 +18,8 @@ CREATE TABLE IF NOT EXISTS todo.Lists
 (
     userId character varying(100) REFERENCES todo.Users(id) NOT NULL,
     name character varying(20) NOT NULL,
-    created timestamp NOT NULL DEFAULT NOW(),
-    lastModified timestamp NOT NULL DEFAULT NOW(),
+    created_at timestamp NOT NULL DEFAULT NOW(),
+    updated_at timestamp NOT NULL DEFAULT NOW(),
     id character varying(100) PRIMARY KEY
 );
 
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS todo.Tasks
     priority todo.priority,
     state character varying(100) REFERENCES todo.States(id) NOT NULL,
     created timestamp NOT NULL DEFAULT NOW(),
-    lastModified timestamp NOT NULL DEFAULT NOW(),
+    updated_at timestamp NOT NULL DEFAULT NOW(),
     id character varying(100) PRIMARY KEY
 );
 
@@ -60,8 +60,8 @@ CREATE TABLE IF NOT EXISTS todo.Comments
 (
     taskId character varying(100) REFERENCES todo.Tasks(id) NOT NULL,
     comment character varying(150),
-    created timestamp NOT NULL DEFAULT NOW(),
-    lastModified timestamp NOT NULL DEFAULT NOW(),
+    created_at timestamp NOT NULL DEFAULT NOW(),
+    updated_at timestamp NOT NULL DEFAULT NOW(),
     id character varying(100) PRIMARY KEY
 );
 
@@ -69,8 +69,8 @@ CREATE TABLE IF NOT EXISTS todo.Reminders
 (
     taskId character varying(100) REFERENCES todo.Tasks(id) NOT NULL,
     reminderDate timestamp NOT NULL,
-    created timestamp NOT NULL DEFAULT NOW(),
-    lastModified timestamp NOT NULL DEFAULT NOW(),
+    created_at timestamp NOT NULL DEFAULT NOW(),
+    updated_at timestamp NOT NULL DEFAULT NOW(),
     id character varying(100) PRIMARY KEY
 );
 
@@ -78,8 +78,8 @@ CREATE TABLE IF NOT EXISTS todo.Tags
 (
     userId character varying(100) REFERENCES todo.Users(id) NOT NULL,
     name character varying(50),
-    created timestamp NOT NULL DEFAULT NOW(),
-    lastModified timestamp NOT NULL DEFAULT NOW(),
+    created_at timestamp NOT NULL DEFAULT NOW(),
+    updated_at timestamp NOT NULL DEFAULT NOW(),
     id character varying(100) PRIMARY KEY
 );
 
@@ -87,5 +87,5 @@ CREATE TABLE IF NOT EXISTS todo.TaskTags
 (
     taskId character varying(100) REFERENCES todo.Tasks(id) NOT NULL,
     tagId character varying(100) REFERENCES todo.Tags(id) NOT NULL
-   );
+);
 
