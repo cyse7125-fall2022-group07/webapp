@@ -13,7 +13,7 @@ async function createList (req, res, next) {
     var list = {
         id: uuidv4(),
         userid: user.id,
-        name: req.body.name
+        name: req.body.listname
         
     };
     Lists.create(list).then(async ldata => {
@@ -34,7 +34,7 @@ async function updateList (req, res, next) {
     const user = await getUserByUsername(req.user.email);
    
     Lists.update({ 
-        name: req.body.name
+        name: req.body.listname
     }, {where : {id: req.body.listId}}).then((result) => {
 
         if (result == 1) {
