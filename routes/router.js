@@ -2,7 +2,7 @@ const router = require('express').Router();
 const baseAuthentication = require('../util/auth.js');
 const userController = require('../Controller/usersController.js');
 
-const listsController = require('../Controller/usersController.js');
+const listsController = require('../Controller/listsController.js');
 
 // GET Method
 
@@ -24,6 +24,19 @@ router.get("/v1/user/self", baseAuthentication() , userController.getUser);
 router.put("/v1/user/self", baseAuthentication() , userController.updateUser);
 
 //Add List
-router.post("/v1/user/list", baseAuthentication(), userController.createUser);
+router.post("/v1/user/list", baseAuthentication(), listsController.createList);
+
+//update List
+router.put("/v1/user/listupdate", baseAuthentication(), listsController.updateList);
+
+//get all list 
+router.get("/v1/user/getalllist", baseAuthentication(), listsController.getAllList);
+
+//get list 
+router.get("/v1/user/getlist", baseAuthentication(), listsController.getListByID);
+
+//get list 
+router.delete("/v1/user/deletelist", baseAuthentication(), listsController.deleteList);
+
 
 module.exports = router; 
