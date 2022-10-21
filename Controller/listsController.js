@@ -29,10 +29,26 @@ async function createList (req, res, next) {
     });
 }
 
+async function checkValidity(req, res, field) {
+    console.log('check valid '+field)
+    if(!req.body[field] ){
+        return res.status(500).send({
+            message: 'Error Updating the List try passing '+field+' in body'
+        });
+        return true;
+    }
+}
 
 async function updateList (req, res, next) {
     const user = await getUserByUsername(req.user.email);
-   
+    
+    if(await checkValidity(req, res,'listname' )){
+        return;
+    }
+    if(await checkValidity(req, res,'listId' )){
+        return;
+    }
+
     Lists.update({ 
         name: req.body.listname
     }, {where : {id: req.body.listId}}).then((result) => {
@@ -40,7 +56,9 @@ async function updateList (req, res, next) {
         if (result == 1) {
             res.sendStatus(204);
         } else {
-            res.sendStatus(400);
+            res.status(400).send({
+                message: 'Invalid listId'
+            });
         }   
     }).catch(err => {
         console.log(err);
@@ -51,6 +69,13 @@ async function updateList (req, res, next) {
 }
 
 async function deleteList (req, res, next) {
+    if(await checkValidity(req, res,'email' )){
+        return;
+    }
+    if(await checkValidity(req, res,'listId' )){
+        return;
+    }
+
     const rslt = await deleteByUsernameAndID(req.user.email, req.body.listId);
 
     res.status(200).send({
@@ -60,6 +85,9 @@ async function deleteList (req, res, next) {
 }
 
 async function getAllList (req, res, next) {
+    if(await checkValidity(req, res,'email' )){
+        return;
+    }
     const lists = await getListByUsername(req.user.email);
 
     res.status(200).send({
@@ -69,6 +97,12 @@ async function getAllList (req, res, next) {
 }
 
 async function getListByID (req, res, next) {
+    if(await checkValidity(req, res,'email' )){
+        return;
+    }
+    if(await checkValidity(req, res,'listId' )){
+        return;
+    }
     const lists = await getListByUsernameAndID(req.user.email, req.body.listId);
     res.status(200).send(lists)
 }
