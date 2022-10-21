@@ -4,11 +4,24 @@ const Lists = db.lists;
 const bcrypt = require('bcrypt');
 const {v4:uuidv4} = require('uuid');
 const {
-    getUserByUsername,
     comparePasswords
 } = require('./usersController.js');
 
+async function checkValidity(req, res, field) {
+    console.log('check valid '+field)
+    if(!req.body[field] ){
+        return res.status(400).send({
+            message: 'Error Updating the List try passing '+field+' in body'
+        });
+        return true;
+    }
+}
+
 async function createList (req, res, next) {
+   
+    if(await checkValidity(req, res,'listname' )){
+        return;
+    }
     const user = await getUserByUsername(req.user.email);
     var list = {
         id: uuidv4(),
@@ -27,16 +40,6 @@ async function createList (req, res, next) {
             message: err.message || "Some error occurred while creating the list!"
         });
     });
-}
-
-async function checkValidity(req, res, field) {
-    console.log('check valid '+field)
-    if(!req.body[field] ){
-        return res.status(500).send({
-            message: 'Error Updating the List try passing '+field+' in body'
-        });
-        return true;
-    }
 }
 
 async function updateList (req, res, next) {
@@ -120,6 +123,10 @@ async function getListByUsernameAndID(email, id) {
 async function  deleteByUsernameAndID(email, id) {
     const user = await getUserByUsername(email);
     return Lists.destroy({where: { userid: user.id,  id: id} })
+}
+
+async function getUserByUsername(email) {
+    return User.findOne({where : {email: email}});
 }
 
 module.exports = {

@@ -11,15 +11,15 @@ router.get("/healthz", (req, res) => {
     res.sendStatus(200).json();
 });
 
-// POST Method
+//createUser POST Method
 
 router.post("/v1/user", userController.createUser);
 
-// GET Method (With Authentication)
+// getUser GET Method (With Authentication)
 
 router.get("/v1/user/self", baseAuthentication() , userController.getUser);
 
-// PUT Method
+// updateUser PUT Method
 
 router.put("/v1/user/self", baseAuthentication() , userController.updateUser);
 
