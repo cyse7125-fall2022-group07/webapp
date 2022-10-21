@@ -35,7 +35,7 @@ router.get("/v1/user/getalllist", baseAuthentication(), listsController.getAllLi
 //get list 
 router.get("/v1/user/getlist", baseAuthentication(), listsController.getListByID);
 
-//get list 
+//delete list 
 router.delete("/v1/user/deletelist", baseAuthentication(), listsController.deleteList);
 
 

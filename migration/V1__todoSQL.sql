@@ -22,8 +22,6 @@ CREATE TABLE IF NOT EXISTS todo.Lists
     updated_at timestamp NOT NULL DEFAULT NOW(),
     id character varying(100) PRIMARY KEY
 );
-anything helps you sleep at night:D
-
 
 CREATE TYPE todo.priority AS ENUM ('High', 'Medium', 'Low');
 
