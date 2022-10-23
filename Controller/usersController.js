@@ -2,13 +2,13 @@ const db = require('../config/sequelizeDB.js');
 const User = db.users;
 const bcrypt = require('bcrypt');
 const {v4:uuidv4} = require('uuid');
-
+const { createList} = require('./listsController');
 
 // Create a User
 
 async function createUser (req, res, next) {
-
-    console.log('create userrr')
+    
+    console.log('create user')
     var hash = await bcrypt.hash(req.body.password, 10);
     const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     if (!emailRegex.test(req.body.email)) {
@@ -96,15 +96,22 @@ async function createUser (req, res, next) {
                 // var publishTextPromise = await sns.publish(params).promise();
 
                 // console.log('publishTextPromise', publishTextPromise);
-                res.status(201).send({
-                    id: udata.id,
-                    firstname: udata.firstname,
-                    lastname: udata.lastname,
-                    email: udata.email,
-                    account_created: udata.createdAt,
-                    account_updated: udata.updatedAt,
-                    isVerified: udata.isVerified
-                });
+                req.body.listname = 'default list'
+                req.user = {
+                    email: req.body.email,
+                    password: req.body.email
+                }
+                createList(req, res , next);
+                return
+                // res.status(201).send({
+                //     id: udata.id,
+                //     firstname: udata.firstname,
+                //     lastname: udata.lastname,
+                //     email: udata.email,
+                //     account_created: udata.createdAt,
+                //     account_updated: udata.updatedAt,
+                //     isVerified: udata.isVerified
+                // });
 
             })
             .catch(err => {

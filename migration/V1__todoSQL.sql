@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS todo.Tasks
     dueDate timestamp NOT NULL,
     priority todo.priority,
     state character varying(100) REFERENCES todo.States(id) NOT NULL,
-    created timestamp NOT NULL DEFAULT NOW(),
+    created_at timestamp NOT NULL DEFAULT NOW(),
     updated_at timestamp NOT NULL DEFAULT NOW(),
     id character varying(100) PRIMARY KEY
 );
