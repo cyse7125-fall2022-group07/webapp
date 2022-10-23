@@ -1,11 +1,12 @@
 const db = require('../config/sequelizeDB.js');
 const User = db.users;
 const Lists = db.lists;
+const Tasks = db.tasks;
 const bcrypt = require('bcrypt');
 const {v4:uuidv4} = require('uuid');
 const {
-    comparePasswords
-} = require('./usersController.js');
+  
+} = require('./taskController');
 
 async function checkValidity(req, res, field) {
     console.log('check valid '+field)
@@ -14,6 +15,17 @@ async function checkValidity(req, res, field) {
             message: 'Error Updating the List try passing '+field+' in body'
         });
         return true;
+    }
+}
+
+async function checkListIdBelongToUser(req, res) {
+    const lists = await getListByUsernameAndID(req.user.email, req.body.listId)
+
+    if( lists == ''){
+        res.status(400).send({
+            message: 'Invalid listId for this user'
+        });
+        return true
     }
 }
 
@@ -72,13 +84,11 @@ async function updateList (req, res, next) {
 }
 
 async function deleteList (req, res, next) {
-    if(await checkValidity(req, res,'email' )){
-        return;
-    }
+    
     if(await checkValidity(req, res,'listId' )){
         return;
     }
-
+    await deleteTaskByListId(req, res, next);
     const rslt = await deleteByUsernameAndID(req.user.email, req.body.listId);
 
     res.status(200).send({
@@ -87,10 +97,20 @@ async function deleteList (req, res, next) {
 
 }
 
-async function getAllList (req, res, next) {
-    if(await checkValidity(req, res,'email' )){
+async function deleteTaskByListId(req, res, next) {
+    if(await checkValidity(req, res,'listId' )){
         return;
     }
+    if( await checkListIdBelongToUser(req, res)){
+        return;
+    }
+    const deletedTask = Tasks.destroy({where: {  listid: req.body.listId} })
+    return deletedTask;
+
+}
+
+async function getAllList (req, res, next) {
+
     const lists = await getListByUsername(req.user.email);
 
     res.status(200).send({
@@ -100,9 +120,7 @@ async function getAllList (req, res, next) {
 }
 
 async function getListByID (req, res, next) {
-    if(await checkValidity(req, res,'email' )){
-        return;
-    }
+    
     if(await checkValidity(req, res,'listId' )){
         return;
     }
@@ -134,5 +152,6 @@ module.exports = {
     updateList: updateList,
     getAllList: getAllList,
     getListByID: getListByID,
-    deleteList: deleteList
+    deleteList: deleteList,
+    getListByUsernameAndID: getListByUsernameAndID
 };
