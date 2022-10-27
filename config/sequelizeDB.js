@@ -20,6 +20,7 @@ db.sequelize = sequelize;
 db.users = require('./usersDB')(sequelize, Sequelize);
 db.lists = require('./listDB')(sequelize, Sequelize);
 db.tasks = require('./taskDB')(sequelize, Sequelize);
-// db.image = require('./imageDB')(sequelize, Sequelize);
+db.comments = require('./commentDB')(sequelize, Sequelize);
+db.reminders = require('./reminderDB')(sequelize, Sequelize);
 
 module.exports = db;

@@ -3,6 +3,8 @@ const baseAuthentication = require('../util/auth.js');
 const userController = require('../Controller/usersController.js');
 const listsController = require('../Controller/listsController.js');
 const taskController = require('../Controller/taskController.js');
+const commentController = require('../Controller/commentController.js');
+const reminderController = require('../Controller/reminderController.js');
 
 // GET Method
 
@@ -80,6 +82,38 @@ router.put("/v1/user/updatetask", baseAuthentication(), taskController.updateTas
 //     "dueDate": "2022-11-04",
 //     "priority": "Low",
 //     "state": "INPROGRESS" 
+// }
+
+//Add Comment by taskId
+router.post("/v1/user/addcomment", baseAuthentication(), commentController.createComment);
+// {
+//     "taskId": "0cec731b-9b52-4947-927e-a1170a2106b7",
+//     "comment":"this is a comment"
+// }
+
+//get Comment by commentId
+router.get("/v1/user/getcomment", baseAuthentication(), commentController.getCommentByCommentID);
+// {
+//     "commentId": "6b70a792-084a-42ec-b5df-57a8bcf96dd2",
+// }
+
+//get Comment by taskId
+router.get("/v1/user/getcommentbytaskid", baseAuthentication(), commentController.getCommentByTaskID);
+// {
+//   "taskId": "0cec731b-9b52-4947-927e-a1170a2106b7"
+// }
+
+//Add Reminder by taskId
+router.post("/v1/user/addreminder", baseAuthentication(), reminderController.createReminder);
+// {
+//     "taskId": "0cec731b-9b52-4947-927e-a1170a2106b7",
+//     "reminderDate":"2022-11-01 00:58:18.351"
+// }
+
+//get Comment by taskId
+router.get("/v1/user/getreminderbytaskid", baseAuthentication(), reminderController.getReminderByTaskID);
+// {
+//   "taskId": "0cec731b-9b52-4947-927e-a1170a2106b7"
 // }
 
 module.exports = router; 
