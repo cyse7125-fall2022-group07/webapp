@@ -3,17 +3,10 @@ const User = db.users;
 const Lists = db.lists;
 const Tasks = db.tasks;
 const Comments = db.comments;
-const bcrypt = require('bcrypt');
 const {
     v4: uuidv4
 } = require('uuid');
-const {
-    comparePasswords
-} = require('./usersController.js');
 
-const {
-
-} = require('./listsController');
 
 async function checkValidity(req, res, field) {
     console.log('check valid ' + field)

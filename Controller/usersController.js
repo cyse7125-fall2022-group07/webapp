@@ -5,7 +5,6 @@ const {v4:uuidv4} = require('uuid');
 const { createList} = require('./listsController');
 
 // Create a User
-
 async function createUser (req, res, next) {
     
     console.log('create user')

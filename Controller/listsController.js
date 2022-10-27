@@ -5,13 +5,10 @@ const Tasks = db.tasks;
 const Comments = db.comments;
 const Reminder = db.reminders;
 const Tasktags = db.tasktags;
-const bcrypt = require('bcrypt');
 const {
     v4: uuidv4
 } = require('uuid');
-const {
 
-} = require('./taskController');
 
 async function checkValidity(req, res, field) {
     console.log('check valid ' + field)

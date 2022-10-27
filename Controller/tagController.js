@@ -5,18 +5,10 @@ const Tasks = db.tasks;
 const Comments = db.comments;
 const Tags = db.tags;
 const Tasktags = db.tasktags;
-
-const bcrypt = require('bcrypt');
 const {
     v4: uuidv4
 } = require('uuid');
-const {
-    comparePasswords
-} = require('./usersController.js');
 
-const {
-
-} = require('./listsController');
 
 async function checkValidity(req, res, field) {
     console.log('check valid ' + field)
@@ -72,15 +64,14 @@ async function createTags(req, res, next) {
         }
     })
 
+    //CHECK IT TASK ALREADY HAVE 10 TAGS
     if (tasktag.length >= 10) {
         res.status(400).send({
             message: "Already have 10 tags!"
         });
         return
     }
-
-
-
+    
     var tagsData;
     var tags;
     const tag = await Tags.findAll({
@@ -91,6 +82,7 @@ async function createTags(req, res, next) {
     })
 
     if (tag == '') {
+        //FOR CREATING NEW TAG
         // console.log('xxxxxxxxxxxxxxxxx notags ', )
         const id = uuidv4();
         tags = {
@@ -107,9 +99,10 @@ async function createTags(req, res, next) {
             res.status(500).send({
                 message: err.message || "Some error occurred while creating the tag!"
             });
+            return;
         });
 
-        //---------------------------------------------------
+        //FOR ASSIGNING THE NEW TAG TO TASK
         var taskTag = {
             taskid: req.body.taskId,
             tagid: id
@@ -127,7 +120,9 @@ async function createTags(req, res, next) {
             });
         });
     } else {
+        //FOR USING EXISTING TAG
 
+        //TO CHECK IF THE TASK ALREADY CONTAIN TAG
         const tasktag = await Tasktags.findAll({
             where: {
                 taskid: req.body.taskId,
@@ -141,7 +136,8 @@ async function createTags(req, res, next) {
             });
             return
         }
-        // console.log('xxxxxxxxxxxxxxxxx tags ', tag)
+
+        //TASK DOES NOT CONTAIN THIS TAG SO BELOW WE CREATE IT
         var taskTag = {
             taskid: req.body.taskId,
             tagid: tag[0].id
