@@ -22,5 +22,7 @@ db.lists = require('./listDB')(sequelize, Sequelize);
 db.tasks = require('./taskDB')(sequelize, Sequelize);
 db.comments = require('./commentDB')(sequelize, Sequelize);
 db.reminders = require('./reminderDB')(sequelize, Sequelize);
+db.tags  = require('./tagsDB')(sequelize, Sequelize);
+db.tasktags  = require('./taskTagDB')(sequelize, Sequelize);
 
 module.exports = db;

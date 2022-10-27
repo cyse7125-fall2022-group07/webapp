@@ -4,6 +4,9 @@ const Lists = db.lists;
 const Tasks = db.tasks;
 const Comments = db.comments;
 const Reminder = db.reminders;
+const Tags = db.tags;
+const Tasktags = db.tasktags;
+
 const bcrypt = require('bcrypt');
 const {
     v4: uuidv4
@@ -198,6 +201,11 @@ async function deleteTaskByTaskId(req, res, next) {
             taskid: req.body.taskId
         }
     })
+    const deleteTaskTags = await Tasktags.destroy({
+        where:{
+            taskid: req.body.taskId
+        }
+    })
     const deletedreminder = await Reminder.destroy({
         where:{
             taskid: req.body.taskId
@@ -241,6 +249,37 @@ async function getTaskByTaskID(req, res, next) {
     res.status(200).send(lists)
 }
 
+async function moveTask(req, res, next) {
+    if (await checkValidity(req, res, 'listId')) {
+        return;
+    }
+    if (await checkValidity(req, res, 'taskId')) {
+        return;
+    }
+
+    if (await checkListIdBelongToUser(req, res)) {
+        return
+    }
+
+    
+
+    const task = await Tasks.update({
+        listid: req.body.listId
+    }, {
+        where: {
+            id: req.body.taskId
+        }
+    }).then(async data => {
+        res.status(200).send(data);
+    }).catch(err => {
+        // logger.error(" Error while creating the user! 500");
+        res.status(500).send({
+            message: err.message || "Some error occurred while creating the tasktag!"
+        });
+    });
+
+}
+
 async function getTaskByListID(req, res, next) {
 
     if (await checkValidity(req, res, 'listId')) {
@@ -255,26 +294,6 @@ async function getTaskByListID(req, res, next) {
         }
     }); //getTaskByListID( req.body.listId);
     res.status(200).send(lists)
-}
-
-async function getTaskByUsernameAndTaskID(email, id) {
-    const user = await getUserByUsername(email);
-    return Tasks.findAll({
-        where: {
-            userid: user.id,
-            id: id
-        }
-    })
-}
-
-async function deleteByUsernameAndID(email, id) {
-    const user = await getUserByUsername(email);
-    return Tasks.destroy({
-        where: {
-            userid: user.id,
-            id: id
-        }
-    })
 }
 
 async function getUserByUsername(email) {
@@ -300,5 +319,6 @@ module.exports = {
     updateTask: updateTask,
     getTaskByTaskID: getTaskByTaskID,
     getTaskByListID: getTaskByListID,
-    deleteTaskByTaskId: deleteTaskByTaskId
+    deleteTaskByTaskId: deleteTaskByTaskId,
+    moveTask: moveTask
 };
