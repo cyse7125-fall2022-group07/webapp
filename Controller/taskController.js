@@ -6,18 +6,10 @@ const Comments = db.comments;
 const Reminder = db.reminders;
 const Tags = db.tags;
 const Tasktags = db.tasktags;
-
-const bcrypt = require('bcrypt');
 const {
     v4: uuidv4
 } = require('uuid');
-const {
-    comparePasswords
-} = require('./usersController.js');
 
-const {
-
-} = require('./listsController');
 
 async function checkValidity(req, res, field) {
     console.log('check valid ' + field)

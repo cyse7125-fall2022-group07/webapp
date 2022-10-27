@@ -2,19 +2,9 @@ const db = require('../config/sequelizeDB.js');
 const User = db.users;
 const Lists = db.lists;
 const Tasks = db.tasks;
-
-const Reminder = db.reminders;
-const bcrypt = require('bcrypt');
 const {
     v4: uuidv4
 } = require('uuid');
-const {
-    comparePasswords
-} = require('./usersController.js');
-
-const {
-
-} = require('./listsController');
 
 async function checkValidity(req, res, field) {
     console.log('check valid ' + field)
@@ -96,25 +86,6 @@ async function createReminder(req, res, next) {
     
 }
 
-async function getReminderByReminderID(req, res, next) {
-    
-    
-    // if (await checkValidity(req, res, 'commentId') ) {
-    //     return;
-    // }
-    // var comment = await Comments.findAll({
-    //     where:{
-    //         id: req.body.commentId
-    //     }
-    // });
-    // req.body.taskId = comment[0].taskid;
-    // if (await checkTaskIdBelongToUser(req, res)) {
-    //     return
-    // }   
-   
-    // res.status(200).send(comment)
-}
-
 async function getReminderByTaskID(req, res, next) {
     
     if (await checkValidity(req, res, 'taskId') ) {
@@ -143,6 +114,5 @@ async function getUserByUsername(email) {
 
 module.exports = {
     createReminder: createReminder,
-    getReminderByReminderID:getReminderByReminderID,
     getReminderByTaskID: getReminderByTaskID
 };
