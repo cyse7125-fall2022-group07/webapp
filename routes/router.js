@@ -5,6 +5,7 @@ const listsController = require('../Controller/listsController.js');
 const taskController = require('../Controller/taskController.js');
 const commentController = require('../Controller/commentController.js');
 const reminderController = require('../Controller/reminderController.js');
+const tagController = require('../Controller/tagController.js');
 
 // GET Method
 
@@ -65,6 +66,13 @@ router.get("/v1/user/gettaskbytaskid", baseAuthentication(), taskController.getT
 //     "taskId": "86ce78fd-1c88-4a29-87df-9e1afcdfa562"
 // }
 
+//move task
+router.put("/v1/user/movetask", baseAuthentication(), taskController.moveTask);
+// {
+//    "taskId": "481c3540-acb6-4935-8b44-ca4e8b87c2fa",
+//   "listId": "481c3540-acb6-4935-8b44-ca4e8b87c2fa",
+// }
+
 //Delete Task By TaskID
 router.delete("/v1/user/deletetaskbytaskid", baseAuthentication(), taskController.deleteTaskByTaskId);
 // {
@@ -114,6 +122,28 @@ router.post("/v1/user/addreminder", baseAuthentication(), reminderController.cre
 router.get("/v1/user/getreminderbytaskid", baseAuthentication(), reminderController.getReminderByTaskID);
 // {
 //   "taskId": "0cec731b-9b52-4947-927e-a1170a2106b7"
+// }
+
+//Add tag by taskId
+router.post("/v1/user/addtag", baseAuthentication(), tagController.createTags);
+// {
+//     "taskId": "634aba16-3a1a-453c-a873-60284bda3622",
+//     "name": "tag4"
+// }
+
+//Rename tag
+router.put("/v1/user/renametag", baseAuthentication(), tagController.renameTag);
+// {
+
+//     "name": "tag4"
+//      "rename": "new tag"
+// }
+
+//Get tag by taskId
+router.get("/v1/user/gettag", baseAuthentication(), tagController.getTagsByTaskID);
+// {
+//     "taskId": "634aba16-3a1a-453c-a873-60284bda3622",
+
 // }
 
 module.exports = router; 

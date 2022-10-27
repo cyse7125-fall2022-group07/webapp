@@ -4,6 +4,7 @@ const Lists = db.lists;
 const Tasks = db.tasks;
 const Comments = db.comments;
 const Reminder = db.reminders;
+const Tasktags = db.tasktags;
 const bcrypt = require('bcrypt');
 const {
     v4: uuidv4
@@ -127,6 +128,11 @@ async function deleteTaskByListId(req, res, next) {
             }
         })
         const deletedreminder = await Reminder.destroy({
+            where:{
+                taskid: tasks[task].id
+            }
+        })
+        const deleteTaskTags = await Tasktags.destroy({
             where:{
                 taskid: tasks[task].id
             }
