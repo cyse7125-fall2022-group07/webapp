@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: todo
-          image: csye7125fall2022group07/todo-app
+          image: csye7125fall2022group07/todo-app:v1
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
@@ -81,7 +81,7 @@ spec:
               cpu: "1000m"
       initContainers:
         - name: db-migration-flyway
-          image: csye7125fall2022group07/db-migrate-flyway
+          image: csye7125fall2022group07/db-migrate-flyway:v1
           env:
             - name: FLYWAY_URL
               value: "jdbc:postgresql://rdsdbcsye7125.cny8sxnztedt.us-east-1.rds.amazonaws.com:5432/rdsdbcsye7125"
