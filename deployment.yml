@@ -1,0 +1,95 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app
+  namespace: kubernetes-dashboard
+  labels:
+    app: todo-app
+spec:
+  replicas: 3
+  progressDeadlineSeconds: 120
+  minReadySeconds: 30
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: todo-app
+  template:
+    metadata:
+      labels:
+        app: todo-app
+    spec:
+      containers:
+        - name: todo
+          image: csye7125fall2022group07/todo-app
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-app-config
+                  key: NODE_ENV
+                  optional: true
+            - name: DB_HOST_todo-app
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-app-config
+                  key: DB_HOST_todo-app
+                  optional: true
+            - name: DB_NAME_todo-app
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-app-config
+                  key: DB_NAME_todo-app
+                  optional: true
+            - name: password
+              valueFrom:
+                secretKeyRef:
+                  name: todo-app-secret
+                  key: password
+                  optional: true
+            - name: username
+              valueFrom:
+                secretKeyRef:
+                  name: todo-app-secret
+                  key: username
+                  optional: true
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "500m"
+            limits:
+              memory: "256Mi"
+              cpu: "1000m"
+      initContainers:
+        - name: db-migration-flyway
+          image: csye7125fall2022group07/db-migrate-flyway
+          env:
+            - name: FLYWAY_URL
+              value: "jdbc:postgresql://rdsdbcsye7125.cny8sxnztedt.us-east-1.rds.amazonaws.com:5432/rdsdbcsye7125"
+            - name: FLYWAY_USER
+              value: csye7125
+            - name: FLYWAY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: todo-app-secret
+                  key: DB_PASS
+          args: ["migrate"]
