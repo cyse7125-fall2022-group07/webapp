@@ -1,19 +1,11 @@
-FROM node:16
+#Use general node image as builder and install dependencies
+FROM node:12 AS build-env
+ADD . /webapp
+WORKDIR /webapp
+RUN npm ci --omit=dev
 
-# Create app directory
-WORKDIR /usr/src/app
-
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package*.json ./
-
-RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
-
-# Bundle app source
-COPY . .
-
-EXPOSE 8080
-CMD [ "node", "index.js" ]
+## Copy application with its dependencies into distroless image
+FROM gcr.io/distroless/nodejs
+COPY --from=build-env /webapp /webapp
+WORKDIR /webapp
+CMD ["index.js"]

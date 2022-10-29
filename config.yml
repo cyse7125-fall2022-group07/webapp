@@ -11,7 +11,7 @@ data:
   # Configuration values can be set as key-value properties
 
   NODE_ENV: webapp
-  DB_NAME_todo-app: csye7125
-  DB_PASS: csye7125
-  DB_USERNAME: Csye7215$22
-  DB_HOST_todo-app: jdbc:postgresql://rdsdbcsye7125.cny8sxnztedt.us-east-1.rds.amazonaws.com:5432/rdsdbcsye7125
+  DB_NAME: csye7125
+  DB_PASS: Q3N5ZTcyMTUy
+  DB_USERNAME: csye7125
+  DB_HOST: jdbc:postgresql://rdsdbcsye7125.cny8sxnztedt.us-east-1.rds.amazonaws.com:5432/rdsdbcsye7125
