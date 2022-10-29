@@ -38,8 +38,8 @@ CREATE TABLE IF NOT EXISTS todo.Tasks
     summary character varying(50),
     task character varying(100) NOT NULL,
     dueDate timestamp NOT NULL,
-    priority todo.priority,
-    state character varying(100) REFERENCES todo.States(id) NOT NULL,
+    priority character varying(100) NOT NULL,
+    state character varying(100) NOT NULL,
     created_at timestamp NOT NULL DEFAULT NOW(),
     updated_at timestamp NOT NULL DEFAULT NOW(),
     id character varying(100) PRIMARY KEY

@@ -18,7 +18,10 @@ app.use(function(req, res, next) {
     next();
 });
 
-db.sequelize.sync();
+// db.sequelize.sync();
+db.sequelize.authenticate()
+    .then(() => console.log('Database Connected...'))
+    .catch(err => console.log('Error:' +err))
 
 const port = process.env.PORT || 3000;
 
