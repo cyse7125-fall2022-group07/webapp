@@ -20,12 +20,12 @@ const config = {
     },
     METRICS_HOSTNAME: "localhost",
     METRICS_PORT: 8125,
-    ssl: true,
-    extra: {
+    dialectOptions: {
         ssl: {
-            rejectUnauthorized: false,
-        },
+            require: true,
+            rejectUnauthorized: false
     }
+}
 };
 
 module.exports = config;
