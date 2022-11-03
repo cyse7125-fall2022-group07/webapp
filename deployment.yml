@@ -7,20 +7,20 @@ metadata:
   labels:
     app: todo-app
 data:
-  DB_USERNAME: Y3N5ZTcxMjU=
-  DB_PASSWORD: Q3N5ZTcyMTUy
+  DB_USER: Y3N5ZTcxMjU=
+  DB_PASSWORD: Y3N5ZTcxMjVwYXNz
 
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: todo-app
+  name: todo-app-config
   namespace: kubernetes-dashboard
   labels:
     app: todo-app
 data:
   NODE_ENV: webapp
-  DB_NAME: csye7125
+  DB_NAME: rdsdbcsye7125
   FLYWAY_ENDPOINT: jdbc:postgresql://rdsdbcsye7125.cny8sxnztedt.us-east-1.rds.amazonaws.com:5432/rdsdbcsye7125
   DB_HOST: rdsdbcsye7125.cny8sxnztedt.us-east-1.rds.amazonaws.com
 ---
@@ -67,7 +67,7 @@ spec:
     spec:
       containers:
         - name: todo
-          image: csye7125fall2022group07/todo-app:v6
+          image: csye7125fall2022group07/todo-app:v8
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
@@ -75,7 +75,7 @@ spec:
             - name: NODE_ENV
               valueFrom:
                 configMapKeyRef:
-                  name: todo-app-config
+                  name: todo-app
                   key: NODE_ENV
                   optional: true
             - name: DB_HOST
@@ -96,15 +96,15 @@ spec:
                   name: todo-app-secret
                   key: DB_PASSWORD
                   optional: true
-            - name: DB_USERNAME
+            - name: DB_USER
               valueFrom:
                 secretKeyRef:
                   name: todo-app-secret
-                  key: DB_USERNAME
+                  key: DB_USER
                   optional: true
           envFrom:
             - configMapRef:
-                name: todo-app
+                name: todo-app-config
           readinessProbe:
             httpGet:
               path: /healthz
@@ -138,10 +138,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: todo-app-secret
-                  key: DB_USERNAME
+                  key: DB_USER
+                  optional: true
             - name: FLYWAY_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: todo-app-secret
                   key: DB_PASSWORD
+                  optional: true
           args: ["migrate"]

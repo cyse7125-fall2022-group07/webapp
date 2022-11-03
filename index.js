@@ -2,6 +2,8 @@ const express = require('express');
 const router = require('./routes/router.js');
 const bodyParser = require('body-parser');
 const db = require("./config/sequelizeDB.js");
+const env = process.env;
+const fs = require('fs');
 
 const app = express();
 app.use(express.json());
@@ -28,5 +30,10 @@ const port = process.env.PORT || 3000;
 module.exports = app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });;
+
+console.log(env.DB_HOST)
+console.log(env.DB_USER)
+console.log(env.DB_PASSWORD)
+console.log(env.DB_NAME)
 
 module.exports = app;
