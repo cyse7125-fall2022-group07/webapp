@@ -21,8 +21,10 @@ metadata:
 data:
   NODE_ENV: webapp
   DB_NAME: rdsdbcsye7125
-  FLYWAY_ENDPOINT: jdbc:postgresql://rdsdbcsye7125.cny8sxnztedt.us-east-1.rds.amazonaws.com:5432/rdsdbcsye7125
-  DB_HOST: rdsdbcsye7125.cny8sxnztedt.us-east-1.rds.amazonaws.com
+  # FLYWAY_ENDPOINT: jdbc:postgresql://rdsdbcsye7125.csi5naarmk9u.us-east-1.rds.amazonaws.com:5432/rdsdbcsye7125
+  FLYWAY_ENDPOINT: $FLYWAY_ENDPOINT
+  # DB_HOST: rdsdbcsye7125.csi5naarmk9u.us-east-1.rds.amazonaws.com
+  DB_HOST: $DB_HOST
 ---
 apiVersion: v1
 kind: Service
