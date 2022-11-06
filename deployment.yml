@@ -67,6 +67,8 @@ spec:
       labels:
         app: todo-app
     spec:
+      imagePullSecrets:
+      - name: regcred
       containers:
         - name: todo
           image: csye7125fall2022group07/todo-app:v8
