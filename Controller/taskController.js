@@ -33,8 +33,8 @@ async function checkListIdBelongToUser(req, res) {
 }
 
 async function checkValidStatus(req, res) {
-    console.log('checkValidStatus',req.body.state, req.body.state != 'TODO' && req.body.state != 'COMPLETE' && req.body.state != 'OVERDUE' )
-    if ( req.body.state != 'TODO' && req.body.state != 'COMPLETE' && req.body.state != 'OVERDUE' ) {
+    console.log('checkValidStatus', req.body.state, req.body.state != 'TODO' && req.body.state != 'COMPLETE' && req.body.state != 'OVERDUE')
+    if (req.body.state != 'TODO' && req.body.state != 'COMPLETE' && req.body.state != 'OVERDUE') {
         res.status(400).send({
             message: 'Invalid state for task, try passing TODO, COMPLETE, OVERDUE'
         });
@@ -50,10 +50,10 @@ async function checkValidStatusDate(req, res) {
     console.log(date1, date2.setHours(0, 0, 0, 0), diffTime);
     var currstate = req.body.state;
 
-    if( currstate != 'COMPLETE' && diffTime<0){
+    if (currstate != 'COMPLETE' && diffTime < 0) {
         currstate = "OVERDUE"
     }
-    if( currstate != 'COMPLETE' && diffTime>0){
+    if (currstate != 'COMPLETE' && diffTime > 0) {
         currstate = "TODO"
     }
     console.log(currstate)
@@ -64,10 +64,10 @@ async function checkValidStatusDate(req, res) {
             id: req.body.taskId
         }
     }).then((result) => {
-        console.log('result', result);
+        // console.log('result', result);
         return false
     }).catch(err => {
-        console.log('error checkValidStatusDate',err);
+        console.log('error checkValidStatusDate', err);
         res.status(500).send({
             message: 'Error Updating the task'
         });
@@ -85,6 +85,10 @@ async function createTask(req, res, next) {
         return
     }
 
+    // if (await checkValidStatusDate(req, res)) {
+    //     return;
+    // }
+
     const user = await getUserByUsername(req.user.email);
     var task = {
         id: uuidv4(),
@@ -97,6 +101,10 @@ async function createTask(req, res, next) {
 
     };
     Tasks.create(task).then(async tdata => {
+        req.body.taskId = task.id;
+        if (await checkValidStatusDate(req, res)) {
+            return;
+        }
         res.status(201).send(
             tdata);
     }).catch(err => {
@@ -130,11 +138,11 @@ async function updateTask(req, res, next) {
     if (await checkListIdBelongToUser(req, res)) {
         return
     }
-    if(await checkValidStatus(req, res)) {
+    if (await checkValidStatus(req, res)) {
         return;
     }
 
-    if(await checkValidStatusDate(req, res)) {
+    if (await checkValidStatusDate(req, res)) {
         return;
     }
     console.log('after checkValidStatusDate')
@@ -150,7 +158,7 @@ async function updateTask(req, res, next) {
         }
     }).then((result) => {
 
-        
+
 
         if (result == 1) {
             res.sendStatus(204);
@@ -189,17 +197,17 @@ async function deleteTaskByTaskId(req, res, next) {
         return
     }
     const deletedcomment = await Comments.destroy({
-        where:{
+        where: {
             taskid: req.body.taskId
         }
     })
     const deleteTaskTags = await Tasktags.destroy({
-        where:{
+        where: {
             taskid: req.body.taskId
         }
     })
     const deletedreminder = await Reminder.destroy({
-        where:{
+        where: {
             taskid: req.body.taskId
         }
     })
@@ -208,7 +216,7 @@ async function deleteTaskByTaskId(req, res, next) {
             id: req.body.taskId
         }
     })
-   
+
     res.status(204).send({
         deletedTask
     })
@@ -220,7 +228,7 @@ async function getTaskByTaskID(req, res, next) {
     if (await checkValidity(req, res, 'taskId')) {
         return;
     }
-    
+
     const lists = await Tasks.findAll({
         where: {
             id: req.body.taskId
@@ -253,7 +261,7 @@ async function moveTask(req, res, next) {
         return
     }
 
-    
+
 
     const task = await Tasks.update({
         listid: req.body.listId
@@ -285,7 +293,49 @@ async function getTaskByListID(req, res, next) {
             listid: req.body.listId
         }
     }); //getTaskByListID( req.body.listId);
-    res.status(200).send(lists)
+
+    var list1;
+    let bar = new Promise((resolve, reject) => {
+        lists.forEach(async (item, index, array) => {
+            req.body.dueDate = await item.duedate;
+            req.body.taskId = await item.id;
+            req.body.state = await item.state;
+            if (await checkValidStatusDate(req, res)) {
+                return;
+            }
+            list1 = await Tasks.findAll({
+                where: {
+                    listid: req.body.listId
+                }
+            });
+            if (index === array.length - 1) resolve()
+        })
+        
+    });
+
+    
+    
+    bar.then(() => {
+        console.log("ssss")
+        res.status(200).send(list1)
+        
+    });
+
+    // await updateDueDate(req, res, lists);
+
+
+}
+
+async function updateDueDate(req, res, lists) {
+    for (var list in lists) {
+        console.log("xxxxxxxxxxxxxxxxxx ", lists[list].id)
+        req.body.dueDate = lists[list].duedate;
+        req.body.taskId = lists[list].id;
+        req.body.state = lists[list].state;
+        if (await checkValidStatusDate(req, res)) {
+            return;
+        }
+    }
 }
 
 async function getUserByUsername(email) {

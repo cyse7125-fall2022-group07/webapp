@@ -189,9 +189,9 @@ async function getUser(req, res, next) {
 // Update a user
 
 async function updateUser(req, res, next) {
-    if(req.body.email != req.user.email) {
-        res.status(400);
-    }
+    // if(req.body.email != req.user.email) {
+    //     res.status(400);
+    // }
     if(!req.body.firstname || !req.body.lastname || !req.body.email || !req.body.password) {
         res.status(400).send({
             message: 'Enter all parameters!'
@@ -201,8 +201,9 @@ async function updateUser(req, res, next) {
     User.update({ 
         firstname: req.body.firstname,
         lastname: req.body.lastname,
-        password: await bcrypt.hash(req.body.password, 10)
-    }, {where : {email: req.body.email}}).then((result) => {
+        password: await bcrypt.hash(req.body.password, 10),
+        email: req.body.email 
+    }, {where : {email: req.user.email}}).then((result) => {
 
         if (result == 1) {
             res.sendStatus(204);
@@ -211,8 +212,8 @@ async function updateUser(req, res, next) {
         }   
     }).catch(err => {
         console.log(err);
-        res.status(500).send({
-            message: 'Error Updating the user'
+        res.status(400).send({
+            message: 'Error Updating the user, use different mail to update mail'
         });
     });
 }
