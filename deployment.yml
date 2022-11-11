@@ -71,7 +71,7 @@ spec:
       - name: regcred
       containers:
         - name: todo
-          image: csye7125fall2022group07/todo-app:v8
+          image: csye7125fall2022group07/todo-app:v9
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
