@@ -146,4 +146,6 @@ router.get("/v1/user/gettag", baseAuthentication(), tagController.getTagsByTaskI
 
 // }
 
+router.get("/self/search", baseAuthentication(), taskController.getSearchData);
+
 module.exports = router; 
