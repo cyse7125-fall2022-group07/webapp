@@ -72,6 +72,7 @@ spec:
       containers:
         - name: todo
           image: csye7125fall2022group07/todo-app:v10
+
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
