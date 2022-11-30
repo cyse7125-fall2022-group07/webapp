@@ -10,6 +10,28 @@ const {
     v4: uuidv4
 } = require('uuid');
 
+const Kafka = require('node-rdkafka');
+
+const producer = Kafka.Producer.createWriteStream({
+    'metadata.broker.list': 'a49fd206fe07d4b00abfee3ff46383df-1826894528.us-east-1.elb.amazonaws.com:9094'
+}, {}, {
+    topic: 'task'
+})
+
+const queueMessage = (data) => {
+    console.log(data)
+    const event = {
+        index: 'task',
+        ...data
+    }
+    console.log(Buffer.from(JSON.stringify(event)))
+    const result = producer.write(Buffer.from(JSON.stringify(event)))
+    if (result) {
+        console.log(result)
+        console.log('We queued our message!');
+    } else
+        console.log('Too many messages in our queue already');
+}
 
 async function checkValidity(req, res, field) {
     console.log('check valid ' + field)
@@ -105,6 +127,20 @@ async function createTask(req, res, next) {
         if (await checkValidStatusDate(req, res)) {
             return;
         }
+
+        await client.index({
+            index: 'task',
+            document: {
+                id: task.id,
+                listid: task.listId,
+                task: task.task,
+                summary: task.summary,
+                duedate: task.dueDate,
+                priority: task.priority,
+                state: task.state
+
+            }
+        })
         res.status(201).send(
             tdata);
     }).catch(err => {
@@ -161,6 +197,12 @@ async function updateTask(req, res, next) {
 
 
         if (result == 1) {
+            queueMessage({
+                task: req.body.task,
+                summary: req.body.summary,
+                duedate: req.body.dueDate,
+                priority: req.body.priority
+            });
             res.sendStatus(204);
         } else {
             res.status(400).send({
@@ -310,15 +352,13 @@ async function getTaskByListID(req, res, next) {
             });
             if (index === array.length - 1) resolve()
         })
-        
+
     });
 
-    
-    
     bar.then(() => {
         console.log("ssss")
         res.status(200).send(list1)
-        
+
     });
 
     // await updateDueDate(req, res, lists);
@@ -356,11 +396,45 @@ async function getListByUsernameAndID(email, id) {
     })
 }
 
+const getSearchData = async (req, res) => {
+    try {
+        // express validator to check if errors
+        // await client.indices.refresh({ index: 'task' })
+        const keywords = req.query.keywords.split(',')
+        console.log(keywords)
+        const resultData = []
+        let searchData = new Promise((resolve, reject) => {
+            keywords.forEach(async (item, index, array) => {
+                let result = await client.search({
+                    index: 'task',
+                    query: {
+                        multi_match: {
+                            query: item,
+                            fields: ['task', 'summary']
+                        }
+                    }
+                })
+                resultData.push(result)
+                if (index === array.length - 1) resolve()
+            })
+        })
+
+        searchData.then(() => {
+            console.log("Reached to success")
+            console.log(resultData)
+            setSuccessResponse(resultData, res, 200)
+        });
+    } catch (e) {
+        setErrorResponse(e.message, res)
+    }
+}
+
 module.exports = {
     createTask: createTask,
     updateTask: updateTask,
     getTaskByTaskID: getTaskByTaskID,
     getTaskByListID: getTaskByListID,
     deleteTaskByTaskId: deleteTaskByTaskId,
-    moveTask: moveTask
+    moveTask: moveTask,
+    getSearchData: getSearchData
 };
