@@ -2,10 +2,12 @@
 FROM node:12 AS build-env
 ADD . /webapp
 WORKDIR /webapp
-RUN npm ci --omit=dev
+RUN rm -rf node_modules
+# RUN npm ci --omit=dev
+RUN npm i
 
 ## Copy application with its dependencies into distroless image
-FROM gcr.io/distroless/nodejs
-COPY --from=build-env /webapp /webapp
-WORKDIR /webapp
+# FROM gcr.io/distroless/nodejs
+# COPY --from=build-env /webapp /webapp
+# WORKDIR /webapp
 CMD ["index.js"]
