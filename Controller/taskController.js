@@ -13,13 +13,20 @@ const {
 const Kafka = require('node-rdkafka');
 
 const producer = Kafka.Producer.createWriteStream({
-    'metadata.broker.list': 'a49fd206fe07d4b00abfee3ff46383df-1826894528.us-east-1.elb.amazonaws.com:9094'
+    'metadata.broker.list': 'a86bf37cf49104637a233d9500136bc4-28372868.us-east-1.elb.amazonaws.com:9094'
 }, {}, {
     topic: 'task'
 })
 
-const queueMessage = (data) => {
+const queueMessage = async (data) => {
     console.log(data)
+    let search = await client.search({
+        index: 'task',
+        query: {
+            match: { id: data.id }
+        }
+    })
+    const searchData = { elasticid: search.hits.hits[0]._id, ...data}
     const event = {
         index: 'task',
         ...data
@@ -198,6 +205,7 @@ async function updateTask(req, res, next) {
 
         if (result == 1) {
             queueMessage({
+                id: req.body.taskId,
                 task: req.body.task,
                 summary: req.body.summary,
                 duedate: req.body.dueDate,
