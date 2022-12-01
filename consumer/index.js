@@ -5,7 +5,7 @@ const fs = require("fs");
 const logger = require('simple-node-logger').createSimpleLogger();
 
 const client = new Client({
-    node: `${process.env.ELASTIC_URL}`,
+    node: `http://a682e275fe56a4732b42145a25811252-1394055622.us-east-1.elb.amazonaws.com:9200/`,
     maxRetries: 5,
     requestTimeout: 60000
 })
