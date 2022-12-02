@@ -4,7 +4,8 @@ ADD . /webapp
 WORKDIR /webapp
 RUN rm -rf node_modules
 # RUN npm ci --omit=dev
-RUN npm i
+# RUN npm i
+RUN npm install -g npm@latest
 
 ## Copy application with its dependencies into distroless image
 # FROM gcr.io/distroless/nodejs
