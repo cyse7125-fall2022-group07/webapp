@@ -8,7 +8,6 @@ const config = {
         user: env.DB_USER || 'postgres',
         password: env.DB_PASSWORD || 'Pass@123',
         database: env.DB_NAME || 'postgres',
-        dialect: "postgres",
         port: 5432,
         schema: 'todo',
         pool: {

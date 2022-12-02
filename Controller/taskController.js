@@ -10,13 +10,32 @@ const {
     v4: uuidv4
 } = require('uuid');
 
+const { Client } = require('@elastic/elasticsearch')
+const fs = require("fs");
 const Kafka = require('node-rdkafka');
 
 const producer = Kafka.Producer.createWriteStream({
-    'metadata.broker.list': 'a86bf37cf49104637a233d9500136bc4-28372868.us-east-1.elb.amazonaws.com:9094'
+    'metadata.broker.list': 'a1c4ee8f3954640cfb56f12dd4b11f5e-553992679.us-east-1.elb.amazonaws.com:9094'
 }, {}, {
     topic: 'task'
 })
+
+const client = new Client({
+    node: 'http://ad8ffbba39374431f870b667be7607ab-126311207.us-east-1.elb.amazonaws.com:9200',
+    // auth: {
+    //     username: 'elastic',
+    //     password: 'ptKRLzSpkzfBVnmS'
+    // },
+    // tls: {
+    //     ca: fs.readFileSync('tls.crt'),
+    //     rejectUnauthorized: false
+    // },
+    maxRetries: 5,
+    requestTimeout: 60000
+})
+
+client.info().then(console.log, console.log)
+
 
 const queueMessage = async (data) => {
     console.log(data)
@@ -26,10 +45,10 @@ const queueMessage = async (data) => {
             match: { id: data.id }
         }
     })
-    const searchData = { elasticid: search.hits.hits[0]._id, ...data}
+    const searchData = { search_id: search.hits.hits[0]._id, ...data}
     const event = {
         index: 'task',
-        ...data
+        ...searchData
     }
     console.log(Buffer.from(JSON.stringify(event)))
     const result = producer.write(Buffer.from(JSON.stringify(event)))
@@ -430,7 +449,7 @@ const getSearchData = async (req, res) => {
         searchData.then(() => {
             console.log("Reached to success")
             console.log(resultData)
-            setSuccessResponse(resultData, res, 200)
+            res.status(200).send(resultData)
         });
     } catch (e) {
         setErrorResponse(e.message, res)

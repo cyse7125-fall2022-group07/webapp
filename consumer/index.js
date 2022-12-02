@@ -4,8 +4,8 @@ const { Client } = require('@elastic/elasticsearch')
 const fs = require("fs");
 const logger = require('simple-node-logger').createSimpleLogger();
 
-const client = new Client({
-    node: `http://a682e275fe56a4732b42145a25811252-1394055622.us-east-1.elb.amazonaws.com:9200/`,
+const client = new  ({
+    node: `http://ad8ffbba39374431f870b667be7607ab-126311207.us-east-1.elb.amazonaws.com:9200`,
     maxRetries: 5,
     requestTimeout: 60000
 })
@@ -15,7 +15,7 @@ client.info().then(console.log, console.log)
 // create a stream with broker list, options and topic
 const consumer = Kafka.KafkaConsumer({
     'group.id': 'helm-chart-dependency',
-    'metadata.broker.list': `a86bf37cf49104637a233d9500136bc4-28372868.us-east-1.elb.amazonaws.com:9094`
+    'metadata.broker.list': `a1c4ee8f3954640cfb56f12dd4b11f5e-553992679.us-east-1.elb.amazonaws.com:9094`
 }, {})
 
 consumer.connect();
@@ -27,10 +27,13 @@ consumer.on('ready', () => {
 }).on('data', async (data) => {
     console.log(`The message is received: ${data.value}`)
     let parsedData = JSON.parse(data.value);
-    let {index, id, ...indexData} = {...parsedData}
+    console.log('parsedData ',parsedData)
+    let {index, search_id, ...indexData} = {...parsedData}
+    console.log("indexData ",index, search_id,indexData )
+
     await client.update({
         index: parsedData.index,
-        id: parsedData.elasticid,
+        id: parsedData.search_id,
         doc: {
             task: indexData.task,
             summary: indexData.summary,
