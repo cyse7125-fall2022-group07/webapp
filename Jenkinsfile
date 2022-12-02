@@ -11,12 +11,6 @@ node {
     stage('Build Image'){
         app = docker.build("${env.DOCKER_ID1}")
     }
-    stage('Publish Image to Registry'){
-        docker.withRegistry('https://registry.hub.docker.com', 'docker-cred'){
-            app.push("${commit_id}")
-            app.push("latest")
-        }
-    }
     stage('Get latest Release')
     {
         sh '''  
@@ -29,6 +23,13 @@ node {
         tar -xvf \$output.tar.gz
         '''
     }
+    stage('Publish Image to Registry'){
+        docker.withRegistry('https://registry.hub.docker.com', 'docker-cred'){
+            app.push("${commit_id}")
+            app.push("latest")
+        }
+    }
+
     stage ('Deploy') {
         sh"""
         export AWS_ACCESS_KEY_ID=${env.AWS_ACCESS_KEY_ID}
