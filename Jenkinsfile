@@ -21,15 +21,19 @@ node {
     {
         sh '''  
         
-        curl -u $GITHUB_TOKEN:x-oauth-basic --silent "https://api.github.com/repos/cyse7125-fall2022-group07/webapp/releases/latest" |
-                    grep '"tag_name":' |                                            
-                    sed -E 's/.*"([^"]+)".*/\1/' > output
-                    echo $output
+        output = 'curl -u $GITHUB_TOKEN:x-oauth-basic --silent "https://api.github.com/repos/cyse7125-fall2022-group07/webapp/releases/latest" |
+        grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' '
+        $output
+
 
         curl -u $GITHUB_TOKEN:x-oauth-basic https://github.com/cyse7125-fall2022-group07/webapp/archive/refs/tags/\$output.tar.gz -LJOH 'Accept: application/octet-stream' 
         tar -xvf \$output.tar.gz
         '''
     }
+        // curl -u $GITHUB_TOKEN:x-oauth-basic --silent "https://api.github.com/repos/cyse7125-fall2022-group07/webapp/releases/latest" |
+        //             grep '"tag_name":' |                                            
+        //             sed -E 's/.*"([^"]+)".*/\1/' > output
+        //             echo $output
     stage ('Deploy') {
         sh"""
         export AWS_ACCESS_KEY_ID=${env.AWS_ACCESS_KEY_ID}
