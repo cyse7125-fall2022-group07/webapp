@@ -17,23 +17,35 @@ node {
             app.push("latest")
         }
     }
-    stage('Get latest Release')
-    {
-        sh '''  
+    stage('Get Latest Release of Helm Chart and unzip'){
+            withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN')])
+            {
+            sh"""
+            rm -f *tar.gz
+            export TAG=`eval curl -s -u $GITHUB_TOKEN:x-oauth-basic https://api.github.com/repos/cyse7125-fall2022-group07/webapp/releases/latest | grep 'tag_name' | cut -d '\"' -f 4`
+            echo \$TAG
+            `curl -u $GITHUB_TOKEN:x-oauth-basic https://github.com/cyse7125-fall2022-group07/webapp/archive/refs/tags/\$TAG.tar.gz -LJOH 'Accept: application/octet-stream'`
+            ls -lrt
+            tar -xvf *.tar.gz
+            ls -lrt
+            rm -f *tar.gz
+            ls -lrt
+            """
+            }
+        }
+    // stage('Get latest Release')
+    // {
+    //     sh '''  
         
-        export TAG=curl -u $GITHUB_TOKEN:x-oauth-basic --silent "https://api.github.com/repos/cyse7125-fall2022-group07/webapp/releases/latest" |
-        grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
-        echo \$TAG
+    //     export TAG=curl -u $GITHUB_TOKEN:x-oauth-basic --silent "https://api.github.com/repos/cyse7125-fall2022-group07/webapp/releases/latest" |
+    //     grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
+    //     echo \$TAG
 
 
-        curl -u $GITHUB_TOKEN:x-oauth-basic https://github.com/cyse7125-fall2022-group07/webapp/archive/refs/tags/\$TAG.tar.gz -LJOH 'Accept: application/octet-stream' 
-        tar -xvf \$TAG.tar.gz
-        '''
-    }
-        // curl -u $GITHUB_TOKEN:x-oauth-basic --silent "https://api.github.com/repos/cyse7125-fall2022-group07/webapp/releases/latest" |
-        //             grep '"tag_name":' |                                            
-        //             sed -E 's/.*"([^"]+)".*/\1/' > output
-        //             echo $output
+    //     curl -u $GITHUB_TOKEN:x-oauth-basic https://github.com/cyse7125-fall2022-group07/webapp/archive/refs/tags/\$TAG.tar.gz -LJOH 'Accept: application/octet-stream' 
+    //     tar -xvf \$TAG.tar.gz
+    //     '''
+    // }
     stage ('Deploy') {
         sh"""
         export AWS_ACCESS_KEY_ID=${env.AWS_ACCESS_KEY_ID}
