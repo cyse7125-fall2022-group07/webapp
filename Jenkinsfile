@@ -17,8 +17,7 @@ node {
             app.push("latest")
         }
     }
-    stage('Get Latest Release of Helm Chart and unzip'){
-            withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN')])
+    stage('Get Latest Release of Helm Chart and unzip')
             {
             sh"""
             rm -f *tar.gz
@@ -32,7 +31,6 @@ node {
             ls -lrt
             """
             }
-        }
     // stage('Get latest Release')
     // {
     //     sh '''  
