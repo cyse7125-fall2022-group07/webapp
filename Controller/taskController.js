@@ -1,3 +1,4 @@
+const env = process.env;
 const db = require('../config/sequelizeDB.js');
 const User = db.users;
 const Lists = db.lists;
@@ -15,23 +16,14 @@ const fs = require("fs");
 const Kafka = require('node-rdkafka');
 
 const producer = Kafka.Producer.createWriteStream({
-    'metadata.broker.list': 'a961b7638cb73450cb89867e96fd474d-376908345.us-east-1.elb.amazonaws.com:9094'
+    'metadata.broker.list': env.KAFKA_BROKER
 }, {}, {
-    topic: 'task'
+    topic: env.KAFKA_TOPIC
 })
 
 const client = new Client({
-    node: 'http://a9aea3364d1534385ae921cc0e71f62f-581012114.us-east-1.elb.amazonaws.com:9200',
-    // auth: {
-    //     username: 'elastic',
-    //     password: 'ptKRLzSpkzfBVnmS'
-    // },
-    // tls: {
-    //     ca: fs.readFileSync('tls.crt'),
-    //     rejectUnauthorized: false
-    // },
-    maxRetries: 5,
-    requestTimeout: 60000
+    // node: 'http://a9aea3364d1534385ae921cc0e71f62f-581012114.us-east-1.elb.amazonaws.com:9200/'
+    node: env.ELASTIC_ENDPOINT
 })
 
 client.info().then(console.log, console.log)
