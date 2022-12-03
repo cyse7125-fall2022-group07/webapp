@@ -21,9 +21,9 @@ node {
             {
             sh"""
             rm -f *tar.gz
-            export TAG=`eval curl -s -u $GITHUB_TOKEN:x-oauth-basic https://api.github.com/repos/cyse7125-fall2022-group07/webapp/releases/latest | grep 'tag_name' | cut -d '\"' -f 4`
+            export TAG=`eval curl -s -u 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:x-oauth-basic https://api.github.com/repos/cyse7125-fall2022-group07/webapp/releases/latest | grep 'tag_name' | cut -d '\"' -f 4`
             echo \$TAG
-            `curl -u $GITHUB_TOKEN:x-oauth-basic https://github.com/cyse7125-fall2022-group07/webapp/archive/refs/tags/\$TAG.tar.gz -LJOH 'Accept: application/octet-stream'`
+            `curl -u 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:x-oauth-basic https://github.com/cyse7125-fall2022-group07/webapp/archive/refs/tags/\$TAG.tar.gz -LJOH 'Accept: application/octet-stream'`
             ls -lrt
             tar -xvf *.tar.gz
             ls -lrt
