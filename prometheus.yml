@@ -5,4 +5,4 @@ scrape_configs:
 - job_name: todo-application
   honor_labels: true
   static_configs:
-  - targets: ['localhost:3030']
+  - targets: ['a74140b3064ed46d7b9c7282564474be-240815348.us-east-1.elb.amazonaws.com:3030']
