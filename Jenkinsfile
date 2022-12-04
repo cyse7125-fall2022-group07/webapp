@@ -36,18 +36,18 @@ node {
             }
     stage ('Deploy') {
         sh"""
-        export data.DB_USER=${env.data.DB_USER}
-        export data.DB_PASSWORD=${env.data.DB_PASSWORD}
-        export data.NODE_ENV=${env.data.NODE_ENV}
-        export data.DB_NAME=${env.data.DB_NAME}
-        export data.FLYWAY_ENDPOINT=${data.FLYWAY_ENDPOINT}
-        export data.DB_HOST=${data.DB_HOST}
-        export namespace=${namespace}
-        export imagePullSecrets=${imagePullSecrets}
-        export image.repository=${image.repository}
-        export initContainer.image=${initContainer.image}
-        export data.elastic_endpoint=${data.elastic_endpoint}
-        export data.kafka_broker=${data.kafka_broker}
+        export DB_USER=${env.DB_USER}
+        export DB_PASSWORD=${env.DB_PASSWORD}
+        export NODE_ENV=${env.NODE_ENV}
+        export DB_NAME=${env.DB_NAME}
+        export FLYWAY_ENDPOINT=${env.FLYWAY_ENDPOINT}
+        export DB_HOST=${env.DB_HOST}
+        export namespace=${env.namespace}
+        export imagePullSecrets=${env.imagePullSecrets}
+        export image.repository=${env.image.repository}
+        export initContainer.image=${env.initContainer.image}
+        export elastic_endpoint=${env.elastic_endpoint}
+        export kafka_broker=${env.kafka_broker}
         export AWS_ACCESS_KEY_ID=${env.AWS_ACCESS_KEY_ID}
         export AWS_SECRET_ACCESS_KEY=${env.AWS_SECRET_ACCESS_KEY}
         export AWS_DEFAULT_REGION=${env.AWS_DEFAULT_REGION}
