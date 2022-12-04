@@ -37,8 +37,8 @@ node {
     stage ('Deploy') {
         sh"""
 
-        export Secret.data.DB_PASSWORD=${env.Secret.data.DB_PASSWORD}
-        export Secret.data.DB_USER=${env.Secret.data.DB_USER}
+        export DB_PASSWORD=Y3N5ZTcxMjVwYXNz
+        export DB_USER=Y3N5ZTcxMjU=
         export AWS_ACCESS_KEY_ID=${env.AWS_ACCESS_KEY_ID}
         export AWS_SECRET_ACCESS_KEY=${env.AWS_SECRET_ACCESS_KEY}
         export AWS_DEFAULT_REGION=${env.AWS_DEFAULT_REGION}
