@@ -36,13 +36,7 @@ node {
             }
     stage ('Deploy') {
         sh"""
-        export DB_USER=${env.DB_USER}
-        export DB_PASSWORD=${env.DB_PASSWORD}
-        export NODE_ENV=${env.NODE_ENV}
-        export DB_NAME=${env.DB_NAME}
-        export FLYWAY_ENDPOINT=${env.FLYWAY_ENDPOINT}
-        export DB_HOST=${env.DB_HOST}
-        export namespace=${env.namespace}
+
 
         export AWS_ACCESS_KEY_ID=${env.AWS_ACCESS_KEY_ID}
         export AWS_SECRET_ACCESS_KEY=${env.AWS_SECRET_ACCESS_KEY}
@@ -50,7 +44,7 @@ node {
         export KOPS_STATE_STORE=${env.KOPS_STATE_STORE}
         kops export kubecfg ${env.CLUSTER_NAME} --state ${env.KOPS_STATE_STORE} --admin
 
-        helm upgrade --install --wait --set image.repository=${env.DOCKER_ID1},image.tag=${commit_id},NODE_ENV=${env.NODE_ENV},DB_NAME=${env.DB_NAME},FLYWAY_ENDPOINT=${env.FLYWAY_ENDPOINT},DB_HOST=${env.DB_HOST},namespace=${env.namespace} todo-app ./helm-chart*/todo-app/
+        helm upgrade --install --wait --set image.repository=${env.DOCKER_ID1},image.tag=${commit_id} todo-app ./helm-chart*
         """
     }
 }
@@ -58,7 +52,13 @@ node {
         // helm upgrade --install --wait --set image.repository=${env.DOCKER_ID1},image.tag=${commit_id} todo-app ./helm-chart*/todo-app/
 
         // helm upgrade --install --wait --set image.repository=${env.DOCKER_ID1},image.tag=${commit_id},DB_USER=${env.DB_USER},DB_PASSWORD=${env.DB_PASSWORD},NODE_ENV=${env.NODE_ENV},DB_NAME=${env.DB_NAME},FLYWAY_ENDPOINT=${env.FLYWAY_ENDPOINT},DB_HOST=${env.DB_HOST},namespace=${env.namespace},imagePullSecrets=${env.imagePullSecrets},repository=${env.repository},image=${env.image},elastic_endpoint=${env.elastic_endpoint},kafka_broker=${env.kafka_broker} todo-app ./helm-chart*/todo-app/
-
+        // export DB_USER=${env.DB_USER}
+        // export DB_PASSWORD=${env.DB_PASSWORD}
+        // export NODE_ENV=${env.NODE_ENV}
+        // export DB_NAME=${env.DB_NAME}
+        // export FLYWAY_ENDPOINT=${env.FLYWAY_ENDPOINT}
+        // export DB_HOST=${env.DB_HOST}
+        // export namespace=${env.namespace}
         // export imagePullSecrets=${env.imagePullSecrets}
         // export repository=${env.repository}
         // export image=${env.image}
