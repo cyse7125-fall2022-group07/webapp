@@ -29,12 +29,13 @@ const counter = new Prometheus.Counter({
 httpRequestDurationMicroseconds
   .labels('prom-logs')
   .observe(5);
-echo
 // GET Method
 
 router.get("/healthz", (req, res) => {
     console.log("Is it hitting?")
     counter.inc();
+    // res.set('Content-Type', Prometheus.register.contentType)
+    // res.end(Prometheus.register.metrics())
     res.sendStatus(200).json();
 });
 
@@ -172,10 +173,9 @@ router.get("/v1/user/gettag", baseAuthentication(), tagController.getTagsByTaskI
 
 router.get("/self/search", baseAuthentication(), taskController.getSearchData);
 
-
 router.get('/metrics', (req, res) => {
-    res.set('Content-Type', client.register.contentType)
-    res.end(client.register.metrics())
+    res.set('Content-Type', Prometheus.register.contentType)
+    res.end(Prometheus.register.metrics())
   })
 
 module.exports = router; 
