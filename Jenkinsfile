@@ -45,7 +45,7 @@ node {
         export KOPS_STATE_STORE=${env.KOPS_STATE_STORE}
         kops export kubecfg ${env.CLUSTER_NAME} --state ${env.KOPS_STATE_STORE} --admin
 
-        helm upgrade --install --wait --set image.repository=${env.DOCKER_ID1},image.tag=${commit_id} todo-app ./helm-chart*/todo-app
+        helm upgrade --install --wait --set image.repository=${env.DOCKER_ID1},image.tag=${commit_id},DB_PASSWORD=Y3N5ZTcxMjVwYXNz,DB_USER=Y3N5ZTcxMjU= todo-app ./helm-chart*/todo-app
         """
     }
 }
