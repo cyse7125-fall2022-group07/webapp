@@ -34,8 +34,8 @@ httpRequestDurationMicroseconds
 router.get("/healthz", (req, res) => {
     console.log("Is it hitting?")
     counter.inc();
-    res.set('Content-Type', Prometheus.register.contentType)
-    res.end(Prometheus.register.metrics())
+    // res.set('Content-Type', Prometheus.register.contentType)
+    // res.end(Prometheus.register.metrics())
     res.sendStatus(200).json();
 });
 

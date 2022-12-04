@@ -25,7 +25,9 @@ db.sequelize.authenticate()
     .then(() => console.log('Database Connected...'))
     .catch(err => console.log('Error:' + err))
 
-const port = process.env.PORT || 3000;
+// const port = process.env.PORT || 8080;
+const port = 3030;
+
 
 module.exports = app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
