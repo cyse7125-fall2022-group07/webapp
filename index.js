@@ -7,9 +7,9 @@ const fs = require('fs');
 
 const app = express();
 app.use(express.json());
-app.use("/",router);
+app.use("/", router);
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
         "Access-Control-Allow-Headers",
@@ -23,7 +23,7 @@ app.use(function(req, res, next) {
 // db.sequelize.sync();
 db.sequelize.authenticate()
     .then(() => console.log('Database Connected...'))
-    .catch(err => console.log('Error:' +err))
+    .catch(err => console.log('Error:' + err))
 
 const port = process.env.PORT || 3000;
 
