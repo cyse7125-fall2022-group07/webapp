@@ -36,16 +36,13 @@ node {
     //         }
     stage ('Deploy') {
         sh"""
-
-        export DB_PASSWORD=${env.DB_PASSWORD}
-        export DB_USER=${env.DB_USER}
         export AWS_ACCESS_KEY_ID=${env.AWS_ACCESS_KEY_ID}
         export AWS_SECRET_ACCESS_KEY=${env.AWS_SECRET_ACCESS_KEY}
         export AWS_DEFAULT_REGION=${env.AWS_DEFAULT_REGION}
         export KOPS_STATE_STORE=${env.KOPS_STATE_STORE}
         kops export kubecfg ${env.CLUSTER_NAME} --state ${env.KOPS_STATE_STORE} --admin
 
-        helm upgrade --install --wait --set image.repository=${env.DOCKER_ID1},image.tag=${commit_id},DB_PASSWORD=${env.DB_PASSWORD},DB_USER=${env.DB_USER} todo-app ./helm-chart*/todo-app
+        helm upgrade --install --wait --set image.repository=${env.DOCKER_ID1},image.tag=${commit_id},data.DB_PASSWORD=${env.DB_PASSWORD},data.DB_USER=${env.DB_USER} todo-app ./helm-chart*/todo-app
         """
     }
 }
