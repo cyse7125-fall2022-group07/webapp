@@ -5,6 +5,7 @@ const Tasks = db.tasks;
 const Comments = db.comments;
 const Reminder = db.reminders;
 const Tasktags = db.tasktags;
+const logger = require('../config/logger');
 const {
     v4: uuidv4
 } = require('uuid');
@@ -44,12 +45,14 @@ async function createList(req, res, next) {
 
     };
     Lists.create(list).then(async ldata => {
+        logger.info("/list created");
         res.status(201).send({
             id: ldata.id,
             name: ldata.name
         });
     }).catch(err => {
         // logger.error(" Error while creating the user! 500");
+        logger.error('list create error');
         res.status(500).send({
             message: err.message || "Some error occurred while creating the list!"
         });
@@ -75,8 +78,10 @@ async function updateList(req, res, next) {
     }).then((result) => {
 
         if (result == 1) {
+            logger.info("/list uopdated");
             res.sendStatus(204);
         } else {
+            logger.error('list update error: Invalid listId');
             res.status(400).send({
                 message: 'Invalid listId'
             });
@@ -97,6 +102,7 @@ async function deleteList(req, res, next) {
 
     await deleteTaskByListId(req, res, next);
     const rslt = await deleteByUsernameAndID(req.user.email, req.body.listId);
+    logger.info("/list deleted");
 
     res.status(200).send({
         result: rslt

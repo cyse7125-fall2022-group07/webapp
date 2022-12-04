@@ -172,9 +172,9 @@ router.get("/v1/user/gettag", baseAuthentication(), tagController.getTagsByTaskI
 
 router.get("/self/search", baseAuthentication(), taskController.getSearchData);
 
-router.get('/metrics', (req, res) => {
-    res.set('Content-Type', Prometheus.register.contentType)
-    res.end(Prometheus.register.metrics())
-  })
+// router.get('/metrics', (req, res) => {
+//     res.set('Content-Type', Prometheus.register.contentType)
+//     res.end(Prometheus.register.metrics())
+//   })
 
 module.exports = router; 
