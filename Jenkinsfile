@@ -40,7 +40,7 @@ node {
         export AWS_SECRET_ACCESS_KEY=${env.AWS_SECRET_ACCESS_KEY}
         export AWS_DEFAULT_REGION=${env.AWS_DEFAULT_REGION}
         export KOPS_STATE_STORE=${env.KOPS_STATE_STORE}
-        kops export kubecfg ${env.CLUSTER_NAME} --state ${env.KOPS_STATE_STORE}
+        kops export kubecfg ${env.CLUSTER_NAME} --state ${env.KOPS_STATE_STORE} --admin
         helm upgrade --install --wait --set image.repository=${env.DOCKER_ID1},image.tag=${commit_id} todo-app ./helm-chart*/todo-app/
         """
     }
