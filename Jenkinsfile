@@ -36,27 +36,31 @@ node {
             }
     stage ('Deploy') {
         sh"""
-        export data.DB_USER=${env.data.DB_USER}
-        export data.DB_PASSWORD=${env.data.DB_PASSWORD}
-        export data.NODE_ENV=${env.data.NODE_ENV}
-        export data.DB_NAME=${env.data.DB_NAME}
-        export data.FLYWAY_ENDPOINT=${data.FLYWAY_ENDPOINT}
-        export data.DB_HOST=${data.DB_HOST}
-        export namespace=${namespace}
-        export imagePullSecrets=${imagePullSecrets}
-        export image.repository=${image.repository}
-        export initContainer.image=${initContainer.image}
-        export data.elastic_endpoint=${data.elastic_endpoint}
-        export data.kafka_broker=${data.kafka_broker}
+
+
         export AWS_ACCESS_KEY_ID=${env.AWS_ACCESS_KEY_ID}
         export AWS_SECRET_ACCESS_KEY=${env.AWS_SECRET_ACCESS_KEY}
         export AWS_DEFAULT_REGION=${env.AWS_DEFAULT_REGION}
         export KOPS_STATE_STORE=${env.KOPS_STATE_STORE}
         kops export kubecfg ${env.CLUSTER_NAME} --state ${env.KOPS_STATE_STORE} --admin
 
-        helm upgrade --install --wait --set image.repository=${env.DOCKER_ID1},image.tag=${commit_id},data.DB_USER=${env.data.DB_USER},data.DB_PASSWORD=${env.data.DB_PASSWORD},data.NODE_ENV=${env.data.NODE_ENV},data.DB_NAME=${env.data.DB_NAME},data.FLYWAY_ENDPOINT=${data.FLYWAY_ENDPOINT},data.DB_HOST=${data.DB_HOST},namespace=${namespace},imagePullSecrets=${imagePullSecrets},image.repository=${image.repository},initContainer.image=${initContainer.image},data.elastic_endpoint=${data.elastic_endpoint},data.kafka_broker=${data.kafka_broker} todo-app ./helm-chart*/todo-app/
+        helm upgrade --install --wait --set image.repository=${env.DOCKER_ID1},image.tag=${commit_id} todo-app ./helm-chart*/
         """
     }
 }
 
         // helm upgrade --install --wait --set image.repository=${env.DOCKER_ID1},image.tag=${commit_id} todo-app ./helm-chart*/todo-app/
+
+        // helm upgrade --install --wait --set image.repository=${env.DOCKER_ID1},image.tag=${commit_id},DB_USER=${env.DB_USER},DB_PASSWORD=${env.DB_PASSWORD},NODE_ENV=${env.NODE_ENV},DB_NAME=${env.DB_NAME},FLYWAY_ENDPOINT=${env.FLYWAY_ENDPOINT},DB_HOST=${env.DB_HOST},namespace=${env.namespace},imagePullSecrets=${env.imagePullSecrets},repository=${env.repository},image=${env.image},elastic_endpoint=${env.elastic_endpoint},kafka_broker=${env.kafka_broker} todo-app ./helm-chart*/todo-app/
+        // export DB_USER=${env.DB_USER}
+        // export DB_PASSWORD=${env.DB_PASSWORD}
+        // export NODE_ENV=${env.NODE_ENV}
+        // export DB_NAME=${env.DB_NAME}
+        // export FLYWAY_ENDPOINT=${env.FLYWAY_ENDPOINT}
+        // export DB_HOST=${env.DB_HOST}
+        // export namespace=${env.namespace}
+        // export imagePullSecrets=${env.imagePullSecrets}
+        // export repository=${env.repository}
+        // export image=${env.image}
+        // export elastic_endpoint=${env.elastic_endpoint}
+        // export kafka_broker=${env.kafka_broker}
