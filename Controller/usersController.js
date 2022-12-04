@@ -3,15 +3,17 @@ const User = db.users;
 const bcrypt = require('bcrypt');
 const {v4:uuidv4} = require('uuid');
 const { createList} = require('./listsController');
-
+const logger = require('../config/logger');
 // Create a User
 async function createUser (req, res, next) {
     
     console.log('create user')
+    
     var hash = await bcrypt.hash(req.body.password, 10);
     const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     if (!emailRegex.test(req.body.email)) {
         // logger.info("/create user 400");
+        logger.error('Enter your Email ID in correct format. Example: abc@xyz.com')
         res.status(400).send({
             message: 'Enter your Email ID in correct format. Example: abc@xyz.com'
         });
@@ -34,7 +36,7 @@ async function createUser (req, res, next) {
         console.log('verified and existing', getUser.dataValues.isVerified);
         var msg = getUser.dataValues.isVerified ? 'User already exists! & verified' : 'User already exists! & not verified';
         console.log('verified and existing msg' ,msg);
-        
+        logger.error('user exist');
         res.status(400).send({
             message: msg
         });
@@ -53,124 +55,31 @@ async function createUser (req, res, next) {
                 const randomnanoID = uuidv4();
 
                 const expiryTime = new Date().getTime();
-
-                // Create the Service interface for dynamoDB
-                // var parameter = {
-                //     TableName: 'csye6225Pro2',
-                //     Item: {
-                //         'Email': {
-                //             S: udata.email
-                //         },
-                //         'TokenName': {
-                //             S: randomnanoID
-                //         },
-                //         'TimeToLive': {
-                //             N: expiryTime.toString()
-                //         }
-                //     }
-                // };
-                // console.log('after user');
-                // //saving the token onto the dynamo DB
-                // try {
-                //     var dydb = await dynamoDatabase.putItem(parameter).promise();
-                //     console.log('try dynamoDatabase', dydb);
-                // } catch (err) {
-                //     console.log('err dynamoDatabase', err);
-                // }
-
-                // console.log('dynamoDatabase', dydb);
-                // var msg = {
-                //     'email': udata.email,
-                //     'token': randomnanoID
-                // };
-                // console.log(JSON.stringify(msg));
-
-                // const params = {
-
-                //     Message: JSON.stringify(msg),
-                //     Subject: randomnanoID,
-                //     TopicArn: 'arn:aws:sns:us-east-1:861022598256:verify_email'
-
-                // }
-                // var publishTextPromise = await sns.publish(params).promise();
-
-                // console.log('publishTextPromise', publishTextPromise);
                 req.body.listname = 'default list'
                 req.user = {
                     email: req.body.email,
                     password: req.body.email
                 }
+                logger.info("/user created");
                 createList(req, res , next);
                 return
-                // res.status(201).send({
-                //     id: udata.id,
-                //     firstname: udata.firstname,
-                //     lastname: udata.lastname,
-                //     email: udata.email,
-                //     account_created: udata.createdAt,
-                //     account_updated: udata.updatedAt,
-                //     isVerified: udata.isVerified
-                // });
-
+               
             })
             .catch(err => {
                 // logger.error(" Error while creating the user! 500");
+                logger.error('user create error');
                 res.status(500).send({
                     message: err.message || "Some error occurred while creating the user!"
                 });
             });
     }
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    // var hash = await bcrypt.hash(req.body.password, 10);
-    // const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    // if(!emailRegex.test(req.body.email)) {
-    //     res.status(400).send({
-    //         message: 'Enter your Email ID in correct format. Example: abc@xyz.com'
-    //     });
-    // }
-    // const getUser = await User .findOne({where: {email: req.body.email}}).catch(err => {
-    //     res.status(500).send({
-    //         message: err.message || 'Some error occurred while creating the user'
-    //     });
-    // });
-    // if(getUser) {
-    //     res.status(400).send({
-    //         message: 'User already exists!'
-    //     });
-
-    // } else {
-    //     var user = {
-    //         id: uuidv4(),
-    //         firstname: req.body.firstname,
-    //         lastname: req.body.lastname,
-    //         password: hash,
-    //         email: req.body.email
-    //     };
-    
-    // User.create(user).then(data => {
-    //     res.status(201).send({
-    //         id: data.id,
-    //         firstname: data.firstname,
-    //         lastname: data.lastname,
-    //         email: data.email,
-    //         account_created: data.createdat,
-    //         account_updated: data.updatedat
-    //     });
-    // })
-    // .catch(err => {
-    //     console.log(err)
-    //     res.status(500).send({
-    //         message:
-    //             err.message || "Some error occurred while creating the user!"
-    //     });
-    // });
-    // }
 }
 
 //Get a User
 async function getUser(req, res, next) {
     const user = await getUserByUsername(req.user.email);
     if (user) {
+        logger.info("/user get");
         res.status(200).send({
             id: user.dataValues.id,
             firstname: user.dataValues.firstname,
@@ -180,6 +89,7 @@ async function getUser(req, res, next) {
             account_updated: user.dataValues.updatedat
         });
     } else {
+        logger.error('user not exist');
         res.status(400).send({
             message: 'User not found!'
         });
@@ -206,12 +116,15 @@ async function updateUser(req, res, next) {
     }, {where : {email: req.user.email}}).then((result) => {
 
         if (result == 1) {
+            logger.info("/user updated successfully");
             res.sendStatus(204);
         } else {
+            logger.error('user update error');
             res.sendStatus(400);
         }   
     }).catch(err => {
         console.log(err);
+        logger.error('user update error',err);
         res.status(400).send({
             message: 'Error Updating the user, use different mail to update mail'
         });

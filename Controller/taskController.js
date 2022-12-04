@@ -7,6 +7,7 @@ const Comments = db.comments;
 const Reminder = db.reminders;
 const Tags = db.tags;
 const Tasktags = db.tasktags;
+const logger = require('../config/logger');
 const {
     v4: uuidv4
 } = require('uuid');
@@ -158,10 +159,12 @@ async function createTask(req, res, next) {
 
             }
         })
+        logger.info("/task created");
         res.status(201).send(
             tdata);
     }).catch(err => {
         // logger.error(" Error while creating the user! 500");
+        logger.error('task create error');
         res.status(500).send({
             message: err.message || "Some error occurred while creating the list!"
         });
@@ -182,6 +185,7 @@ async function updateTask(req, res, next) {
     });
     // console.log('xxxxxxxxxxxxxxx list ',JSON.stringify( lists[0].listid) )
     if (lists == '') {
+        logger.error('task create error: Invalid taskId');
         res.status(400).send({
             message: 'Invalid taskId for this user'
         });
@@ -221,8 +225,10 @@ async function updateTask(req, res, next) {
                 duedate: req.body.dueDate,
                 priority: req.body.priority
             });
+            logger.info("/task updated");
             res.sendStatus(204);
         } else {
+            logger.error('task create error: Invalid listId');
             res.status(400).send({
                 message: 'Invalid listId'
             });
