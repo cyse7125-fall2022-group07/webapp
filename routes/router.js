@@ -22,8 +22,8 @@ const httpRequestDurationMicroseconds = new Prometheus.Histogram({
 });
 
 const counter = new Prometheus.Counter({
-    name: 'metric_name',
-    help: 'metric_help',
+    name: 'node_request_operations_total',
+    help: 'number of processed request',
 });
 
 httpRequestDurationMicroseconds
