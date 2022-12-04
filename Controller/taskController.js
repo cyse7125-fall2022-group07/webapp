@@ -22,7 +22,6 @@ const producer = Kafka.Producer.createWriteStream({
 })
 
 const client = new Client({
-    // node: 'http://a9aea3364d1534385ae921cc0e71f62f-581012114.us-east-1.elb.amazonaws.com:9200/'
     node: env.ELASTIC_ENDPOINT
 })
 

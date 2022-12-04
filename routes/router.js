@@ -7,10 +7,34 @@ const commentController = require('../Controller/commentController.js');
 const reminderController = require('../Controller/reminderController.js');
 const tagController = require('../Controller/tagController.js');
 
+const Prometheus = require('prom-client');
+const collectDefaultMetrics = Prometheus.collectDefaultMetrics;
+collectDefaultMetrics({
+    timeout: 5000
+});
+
+const httpRequestDurationMicroseconds = new Prometheus.Histogram({
+    name: 'http_request_duration_ms',
+    help: 'Duration of HTTP requests in ms',
+    labelNames: ['route'],
+    // buckets for response time from 0.1ms to 500ms
+    buckets: [ 1, 2, 4, 8, 12]
+});
+
+const counter = new Prometheus.Counter({
+    name: 'metric_name',
+    help: 'metric_help',
+});
+
+httpRequestDurationMicroseconds
+  .labels('prom-logs')
+  .observe(5);
+echo
 // GET Method
 
 router.get("/healthz", (req, res) => {
     console.log("Is it hitting?")
+    counter.inc();
     res.sendStatus(200).json();
 });
 
@@ -147,5 +171,11 @@ router.get("/v1/user/gettag", baseAuthentication(), tagController.getTagsByTaskI
 // }
 
 router.get("/self/search", baseAuthentication(), taskController.getSearchData);
+
+
+router.get('/metrics', (req, res) => {
+    res.set('Content-Type', client.register.contentType)
+    res.end(client.register.metrics())
+  })
 
 module.exports = router; 

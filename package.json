@@ -24,6 +24,7 @@
     "mysql2": "^2.3.3",
     "node-rdkafka": "^2.14.0",
     "pg": "^8.8.0",
+    "prom-client": "^14.1.0",
     "sequelize": "^6.24.0",
     "simple-node-logger": "^21.8.12"
   }
