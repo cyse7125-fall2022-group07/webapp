@@ -1,8 +1,11 @@
-global:
-  scrape_interval:     5s
-  evaluation_interval: 30s
-scrape_configs:
-- job_name: todo-application
-  honor_labels: true
-  static_configs:
-  - targets: ['a74140b3064ed46d7b9c7282564474be-240815348.us-east-1.elb.amazonaws.com:3030']
+# global:
+#   scrape_interval:     5s
+#   evaluation_interval: 30s
+# scrape_configs:
+# - job_name: todo-application
+#   honor_labels: true
+#   static_configs:
+#   - targets: ['a496ba199d16c436eaabda2e5ee579e9-905980890.us-east-1.elb.amazonaws.com:3030']
+
+
+
