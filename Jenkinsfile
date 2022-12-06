@@ -41,23 +41,6 @@ node {
         export AWS_DEFAULT_REGION=${env.AWS_DEFAULT_REGION}
         export KOPS_STATE_STORE=${env.KOPS_STATE_STORE}
         kops export kubecfg ${env.CLUSTER_NAME} --state ${env.KOPS_STATE_STORE} --admin
-        helm upgrade --install --wait --set data.DB_PASSWORD=${env.DB_PASSWORD},data.DB_USER=${env.DB_USER},data.FLYWAY_ENDPOINT=${env.FLYWAY_ENDPOINT},data.DB_HOST=${env.DB_HOST},data.elastic_endpoint=${env.elastic_endpoint},data.kafka_broker=${env.kafka_broker},data.NODE_ENV=${env.NODE_ENV},data.DB_NAME=${env.DB_NAME},"initContainer.image=${env.image}",image.repository=${env.repository},imagePullSecrets=regcred,namespace=kubernetes-dashboard todo-app ./helm-chart*/todo-app
+        helm upgrade --install --set data.DB_PASSWORD=${env.DB_PASSWORD},data.DB_USER=${env.DB_USER},data.FLYWAY_ENDPOINT=${env.FLYWAY_ENDPOINT},data.DB_HOST=${env.DB_HOST},data.elastic_endpoint=${env.elastic_endpoint},data.kafka_broker=${env.kafka_broker},data.NODE_ENV=${env.NODE_ENV},data.DB_NAME=${env.DB_NAME},"initContainer.image=${env.image}",image.repository=${env.repository},imagePullSecrets=regcred,namespace=kubernetes-dashboard todo-app ./helm-chart*/todo-app
         """}
     }
-
-
-        // helm upgrade --install --wait --set image.repository=${env.DOCKER_ID1},image.tag=${commit_id} todo-app ./helm-chart*/todo-app/
-
-        // helm upgrade --install --wait --set image.repository=${env.DOCKER_ID1},image.tag=${commit_id},DB_USER=${env.DB_USER},DB_PASSWORD=${env.DB_PASSWORD},NODE_ENV=${env.NODE_ENV},DB_NAME=${env.DB_NAME},FLYWAY_ENDPOINT=${env.FLYWAY_ENDPOINT},DB_HOST=${env.DB_HOST},namespace=${env.namespace},imagePullSecrets=${env.imagePullSecrets},repository=${env.repository},image=${env.image},elastic_endpoint=${env.elastic_endpoint},kafka_broker=${env.kafka_broker} todo-app ./helm-chart*/todo-app/
-        // export DB_USER=${env.DB_USER}
-        // export DB_PASSWORD=${env.DB_PASSWORD}
-        // export NODE_ENV=${env.NODE_ENV}
-        // export DB_NAME=${env.DB_NAME}
-        // export FLYWAY_ENDPOINT=${env.FLYWAY_ENDPOINT}
-        // export DB_HOST=${env.DB_HOST}
-        // export namespace=${env.namespace}
-        // export imagePullSecrets=${env.imagePullSecrets}
-        // export repository=${env.repository}
-        // export image=${env.image}
-        // export elastic_endpoint=${env.elastic_endpoint}
-        // export kafka_broker=${env.kafka_broker}
