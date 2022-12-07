@@ -36,7 +36,10 @@ node {
             }
             }
     stage ('Deploy') {
-        withCredentials(bindings: [usernamePassword(credentialsId: regcred, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')])
+        environment {
+            registryCredential = 'docker-repo-jenkinsci'
+        }
+        withCredentials(bindings: [usernamePassword(credentialsId: registryCredential, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')])
         {
         sh"""
         pwd
