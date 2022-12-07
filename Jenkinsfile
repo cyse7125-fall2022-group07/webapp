@@ -39,12 +39,7 @@ node {
         sh"""
         pwd
         ls -lta
-        
-        export AWS_ACCESS_KEY_ID=${env.AWS_ACCESS_KEY_ID}
-        export AWS_SECRET_ACCESS_KEY=${env.AWS_SECRET_ACCESS_KEY}
-        export AWS_DEFAULT_REGION=${env.AWS_DEFAULT_REGION}
-        export KOPS_STATE_STORE=${env.KOPS_STATE_STORE}
-        kops export kubecfg ${env.CLUSTER_NAME} --state ${env.KOPS_STATE_STORE} --admin
+
         helm upgrade --install --set data.DB_PASSWORD=${env.DB_PASSWORD},data.DB_USER=${env.DB_USER},data.FLYWAY_ENDPOINT=${env.FLYWAY_ENDPOINT},data.DB_HOST=${env.DB_HOST},data.elastic_endpoint=${env.elastic_endpoint},data.kafka_broker=${env.kafka_broker},data.NODE_ENV=${env.NODE_ENV},data.DB_NAME=${env.DB_NAME},"initContainer.image=${env.image}",image.repository=${env.repository},imagePullSecrets=regcred,namespace=kubernetes-dashboard todo-app ./helm-chart*/todo-app
         """}
     }
