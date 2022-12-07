@@ -39,7 +39,8 @@ node {
         environment {
             registryCredential = 'docker-repo-jenkinsci'
         }
-        withCredentials(bindings: [usernamePassword(credentialsId: registryCredential, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')])
+        steps {
+        withCredentials(bindings:[usernamePassword(credentialsId: registryCredential, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')])
         {
         sh"""
         pwd
@@ -52,6 +53,7 @@ node {
         kubectl create secret docker-registry regcred --docker-server=docker.io --docker-username=$DOCKER_USERNAME --docker-password=$DOCKER_PASSWORD --docker-email=${env.docker-email} --namespace=${env.namespace}
         helm upgrade --install --set data.DB_PASSWORD=${env.DB_PASSWORD},data.DB_USER=${env.DB_USER},data.FLYWAY_ENDPOINT=${env.FLYWAY_ENDPOINT},data.DB_HOST=${env.DB_HOST},data.elastic_endpoint=${env.elastic_endpoint},data.kafka_broker=${env.kafka_broker},data.NODE_ENV=${env.NODE_ENV},data.DB_NAME=${env.DB_NAME},"initContainer.image=${env.image}",image.repository=${env.repository},imagePullSecrets=regcred,namespace=${env.namespace} todo-app ./helm-chart*/todo-app
         """}
+        }
     }
 }
      // kubectl create secret docker-registry regcred --docker-server=docker.io --docker-username=${env.docker-username} --docker-password=${env.docker-password} --docker-email=${env.docker-email} --namespace=${env.namespace}
