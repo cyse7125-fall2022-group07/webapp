@@ -30,7 +30,8 @@ client.info().then(console.log, console.log)
 
 
 const queueMessage = async (data) => {
-    console.log(data)
+    // console.log(data)
+    console.log('Message published to Kafka topic: ', env.KAFKA_TOPIC)
     let search = await client.search({
         index: 'task',
         query: {
@@ -54,6 +55,7 @@ const queueMessage = async (data) => {
 async function checkValidity(req, res, field) {
     console.log('check valid ' + field)
     if (!req.body[field]) {
+        console.error('error updating list')
         return res.status(400).send({
             message: 'Error Updating the List try passing ' + field + ' in body'
         });
@@ -65,6 +67,7 @@ async function checkListIdBelongToUser(req, res) {
     const lists = await getListByUsernameAndID(req.user.email, req.body.listId)
 
     if (lists == '') {
+        console.warn('Invalid listId for this user')
         res.status(400).send({
             message: 'Invalid listId for this user'
         });
@@ -75,7 +78,9 @@ async function checkListIdBelongToUser(req, res) {
 async function checkValidStatus(req, res) {
     console.log('checkValidStatus', req.body.state, req.body.state != 'TODO' && req.body.state != 'COMPLETE' && req.body.state != 'OVERDUE')
     if (req.body.state != 'TODO' && req.body.state != 'COMPLETE' && req.body.state != 'OVERDUE') {
+        console.warn('Invalid state for task, try passing TODO, COMPLETE, OVERDUE')
         res.status(400).send({
+            
             message: 'Invalid state for task, try passing TODO, COMPLETE, OVERDUE'
         });
         return true
@@ -96,7 +101,7 @@ async function checkValidStatusDate(req, res) {
     if (currstate != 'COMPLETE' && diffTime > 0) {
         currstate = "TODO"
     }
-    console.log(currstate)
+    // console.log(currstate)
     Tasks.update({
         state: currstate
     }, {
@@ -107,7 +112,8 @@ async function checkValidStatusDate(req, res) {
         // console.log('result', result);
         return false
     }).catch(err => {
-        console.log('error checkValidStatusDate', err);
+        console.error('Error Updating the task')
+        // console.log('error checkValidStatusDate', err);
         res.status(500).send({
             message: 'Error Updating the task'
         });
@@ -117,7 +123,7 @@ async function checkValidStatusDate(req, res) {
 }
 
 async function createTask(req, res, next) {
-
+    console.log('create task')
     if (await checkValidity(req, res, 'listId') && await checkListIdBelongToUser(req, res) && await checkValidity(req, res, 'task')) {
         return;
     }
@@ -226,6 +232,7 @@ async function updateTask(req, res, next) {
                 priority: req.body.priority
             });
             logger.info("/task updated");
+
             res.sendStatus(204);
         } else {
             logger.error('task create error: Invalid listId');
@@ -242,6 +249,7 @@ async function updateTask(req, res, next) {
 }
 
 async function deleteTaskByTaskId(req, res, next) {
+    console.log('task deleted')
 
     if (await checkValidity(req, res, 'taskId')) {
         return;
@@ -290,6 +298,7 @@ async function deleteTaskByTaskId(req, res, next) {
 }
 
 async function getTaskByTaskID(req, res, next) {
+    console.log('get task by id')
 
     if (await checkValidity(req, res, 'taskId')) {
         return;
@@ -316,6 +325,7 @@ async function getTaskByTaskID(req, res, next) {
 }
 
 async function moveTask(req, res, next) {
+    console.log('move task')
     if (await checkValidity(req, res, 'listId')) {
         return;
     }
@@ -347,6 +357,7 @@ async function moveTask(req, res, next) {
 }
 
 async function getTaskByListID(req, res, next) {
+    console.log('get task by list id')
 
     if (await checkValidity(req, res, 'listId')) {
         return;
@@ -421,6 +432,7 @@ async function getListByUsernameAndID(email, id) {
 }
 
 const getSearchData = async (req, res) => {
+    console.log('get search data')
     try {
         // express validator to check if errors
         // await client.indices.refresh({ index: 'task' })
@@ -449,7 +461,10 @@ const getSearchData = async (req, res) => {
             res.status(200).send(resultData)
         });
     } catch (e) {
-        setErrorResponse(e.message, res)
+        // setErrorResponse(e.message, res)
+        console.log("e", e.message);
+        res.status(400).send(e.message)
+        
     }
 }
 

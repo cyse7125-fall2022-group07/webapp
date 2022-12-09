@@ -14,6 +14,7 @@ async function createUser (req, res, next) {
     if (!emailRegex.test(req.body.email)) {
         // logger.info("/create user 400");
         logger.error('Enter your Email ID in correct format. Example: abc@xyz.com')
+        console.warn('Enter your Email ID in correct format. Example: abc@xyz.com')
         res.status(400).send({
             message: 'Enter your Email ID in correct format. Example: abc@xyz.com'
         });
@@ -24,6 +25,7 @@ async function createUser (req, res, next) {
         }
     }).catch(err => {
         // logger.error("/create user error 500");
+        console.error('Some error occurred while creating the user')
         res.status(500).send({
             message: err.message || 'Some error occurred while creating the user'
         });
@@ -35,7 +37,7 @@ async function createUser (req, res, next) {
     if (getUser) {
         console.log('verified and existing', getUser.dataValues.isVerified);
         var msg = getUser.dataValues.isVerified ? 'User already exists! & verified' : 'User already exists! & not verified';
-        console.log('verified and existing msg' ,msg);
+        console.error('verified and existing msg' ,msg);
         logger.error('user exist');
         res.status(400).send({
             message: msg
@@ -63,7 +65,6 @@ async function createUser (req, res, next) {
                 logger.info("/user created");
                 createList(req, res , next);
                 return
-               
             })
             .catch(err => {
                 // logger.error(" Error while creating the user! 500");
@@ -77,6 +78,7 @@ async function createUser (req, res, next) {
 
 //Get a User
 async function getUser(req, res, next) {
+    console.log('get user')
     const user = await getUserByUsername(req.user.email);
     if (user) {
         logger.info("/user get");
@@ -102,12 +104,14 @@ async function updateUser(req, res, next) {
     // if(req.body.email != req.user.email) {
     //     res.status(400);
     // }
+    console.log('update user')
     if(!req.body.firstname || !req.body.lastname || !req.body.email || !req.body.password) {
+        console.warn('Enter all parameters!');
         res.status(400).send({
             message: 'Enter all parameters!'
         });
     }
-    console.log('mail '+req.body.email)
+    // console.log('mail '+req.body.email)
     User.update({ 
         firstname: req.body.firstname,
         lastname: req.body.lastname,
@@ -125,6 +129,7 @@ async function updateUser(req, res, next) {
     }).catch(err => {
         console.log(err);
         logger.error('user update error',err);
+        console.error('Error Updating the user, use different mail to update mail');
         res.status(400).send({
             message: 'Error Updating the user, use different mail to update mail'
         });
@@ -132,6 +137,7 @@ async function updateUser(req, res, next) {
 }
 
 async function getUserByUsername(email) {
+    console.log('get user by username')
     return User.findOne({where : {email: email}});
 }
 
