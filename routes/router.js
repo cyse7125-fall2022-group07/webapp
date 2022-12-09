@@ -26,16 +26,18 @@ const counter = new Prometheus.Counter({
     help: 'number of processed request',
 });
 
-httpRequestDurationMicroseconds
-  .labels('prom-logs')
-  .observe(5);
+
 // GET Method
 
 router.get("/healthz", (req, res) => {
     console.log("Is it hitting?")
     counter.inc();
     console.log('counter')
+    httpRequestDurationMicroseconds
+    .labels('prom-logs')
+    .observe(5);
     res.sendStatus(200).json();
+    
 });
 
 //createUser POST Method

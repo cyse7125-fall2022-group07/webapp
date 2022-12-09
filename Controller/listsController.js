@@ -33,7 +33,7 @@ async function checkListIdBelongToUser(req, res) {
 }
 
 async function createList(req, res, next) {
-
+    console.log('created list')
     if (await checkValidity(req, res, 'listname')) {
         return;
     }
@@ -47,8 +47,11 @@ async function createList(req, res, next) {
     Lists.create(list).then(async ldata => {
         logger.info("/list created");
         res.status(201).send({
-            id: ldata.id,
-            name: ldata.name
+            'user': user,
+            'list': {
+                id: ldata.id,
+                name: ldata.name
+            }
         });
     }).catch(err => {
         // logger.error(" Error while creating the user! 500");
@@ -60,6 +63,7 @@ async function createList(req, res, next) {
 }
 
 async function updateList(req, res, next) {
+    console.log('update list')
     const user = await getUserByUsername(req.user.email);
 
     if (await checkValidity(req, res, 'listname')) {
@@ -95,7 +99,7 @@ async function updateList(req, res, next) {
 }
 
 async function deleteList(req, res, next) {
-    
+    console.log('delete list')
     if (await checkValidity(req, res, 'listId')) {
         return;
     }
@@ -161,7 +165,7 @@ async function getAllList(req, res, next) {
 }
 
 async function getListByID(req, res, next) {
-
+    console.log('get list by id')
     if (await checkValidity(req, res, 'listId')) {
         return;
     }
