@@ -43,7 +43,7 @@ node {
             export AWS_DEFAULT_REGION=${env.AWS_DEFAULT_REGION}
             export KOPS_STATE_STORE=${env.KOPS_STATE_STORE}
             kops export kubeconfig ${env.CLUSTER_NAME} --state ${env.KOPS_STATE_STORE} --admin
-            helm upgrade --install todo-app --create-namespace --namespace kubernetes-dashboard ./helm-chart*/webapp --set data.DB_PASSWORD=${DB_PASSWORD},data.DB_USER=${DB_USER},data.FLYWAY_ENDPOINT=${env.FLYWAY_ENDPOINT},data.DB_HOST=${env.DB_HOST},data.elastic_endpoint=${env.elastic_endpoint},data.kafka_broker=${env.kafka_broker},data.NODE_ENV=${env.NODE_ENV},data.DB_NAME=${env.DB_NAME},"initContainer.image=${env.image}",image.repository=${env.repository},image.tag=${commit_id},imagePullSecrets=regcred
+            helm upgrade --install todo-app --create-namespace --namespace kubernetes-dashboard ./helm-chart*/todo-app --set data.DB_PASSWORD=${DB_PASSWORD},data.DB_USER=${DB_USER},data.FLYWAY_ENDPOINT=${env.FLYWAY_ENDPOINT},data.DB_HOST=${env.DB_HOST},data.elastic_endpoint=${env.elastic_endpoint},data.kafka_broker=${env.kafka_broker},data.NODE_ENV=${env.NODE_ENV},data.DB_NAME=${env.DB_NAME},"initContainer.image=${env.image}",image.repository=${env.repository},image.tag=${commit_id},imagePullSecrets=regcred
             """
             }
         }
