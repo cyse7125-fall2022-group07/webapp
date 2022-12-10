@@ -13,6 +13,8 @@ collectDefaultMetrics({
     timeout: 5000
 });
 
+//change
+
 const httpRequestDurationMicroseconds = new Prometheus.Histogram({
     name: 'http_request_duration_ms',
     help: 'Duration of HTTP requests in ms',
