@@ -21,6 +21,14 @@ const httpRequestDurationMicroseconds = new Prometheus.Histogram({
     buckets: [ 1, 2, 4, 8, 12]
 });
 
+const sqlRequestDurationMicroseconds = new Prometheus.Histogram({
+    name: 'sql_request_duration_ms',
+    help: 'Duration of sql requests in ms',
+    labelNames: ['route'],
+    // buckets for response time from 0.1ms to 500ms
+    buckets: [ 1, 2, 4, 8, 12]
+});
+
 const counter = new Prometheus.Counter({
     name: 'node_request_operations_total',
     help: 'number of processed request',
@@ -194,3 +202,7 @@ router.get('/metrics', async (req, res) => {
 });
 
 module.exports = router; 
+module.exports = {
+    router: router,
+    sqlRequestDurationMicroseconds: sqlRequestDurationMicroseconds
+};
