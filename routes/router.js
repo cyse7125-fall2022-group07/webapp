@@ -52,7 +52,7 @@ router.get("/healthz", (req, res) => {
 
 //createUser POST Method
 
-router.post("/v2/user", userController.createUser);
+router.post("/v1/user", userController.createUser);
 
 // getUser GET Method (With Authentication)
 
