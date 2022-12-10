@@ -14,7 +14,7 @@ node {
     stage('Publish Docker Image to DockerHub Registry'){
         docker.withRegistry('https://registry.hub.docker.com', 'regcred'){
             app.push("${commit_id}")
-            app.push("latest")
+            // app.push("latest")
         }
     }
     stage('Get the updated version of helm chart')
