@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const {v4:uuidv4} = require('uuid');
 const { createList} = require('./listsController');
 const logger = require('../config/logger');
+const { sqlRequestDurationMicroseconds } = require('../routes/router');
 // Create a User
 async function createUser (req, res, next) {
     
@@ -52,6 +53,9 @@ async function createUser (req, res, next) {
             is_verified: true
         };
         console.log('above user');
+        sqlRequestDurationMicroseconds
+        .labels('sql-logs')
+        .observe(5);
         User.create(user).then(async udata => {
 
                 const randomnanoID = uuidv4();
@@ -112,6 +116,9 @@ async function updateUser(req, res, next) {
         });
     }
     // console.log('mail '+req.body.email)
+    sqlRequestDurationMicroseconds
+    .labels('sql-logs')
+    .observe(5);
     User.update({ 
         firstname: req.body.firstname,
         lastname: req.body.lastname,
@@ -138,6 +145,9 @@ async function updateUser(req, res, next) {
 
 async function getUserByUsername(email) {
     console.log('get user by username')
+    sqlRequestDurationMicroseconds
+    .labels('sql-logs')
+    .observe(5);
     return User.findOne({where : {email: email}});
 }
 

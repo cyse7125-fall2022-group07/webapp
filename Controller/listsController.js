@@ -9,7 +9,7 @@ const logger = require('../config/logger');
 const {
     v4: uuidv4
 } = require('uuid');
-
+const { sqlRequestDurationMicroseconds } = require('../routes/router');
 
 async function checkValidity(req, res, field) {
     console.log('check valid ' + field)
@@ -44,6 +44,9 @@ async function createList(req, res, next) {
         name: req.body.listname
 
     };
+    sqlRequestDurationMicroseconds
+    .labels('sql-logs')
+    .observe(5);
     Lists.create(list).then(async ldata => {
         logger.info("/list created");
         res.status(201).send({
@@ -73,6 +76,9 @@ async function updateList(req, res, next) {
         return;
     }
 
+    sqlRequestDurationMicroseconds
+    .labels('sql-logs')
+    .observe(5);
     Lists.update({
         name: req.body.listname
     }, {
@@ -129,6 +135,9 @@ async function deleteTaskByListId(req, res, next) {
     })
 
     for (var task in tasks) {
+        sqlRequestDurationMicroseconds
+    .labels('sql-logs')
+    .observe(5);
         const deletedcomment = await Comments.destroy({
             where: {
                 taskid: tasks[task].id

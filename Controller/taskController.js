@@ -11,6 +11,7 @@ const logger = require('../config/logger');
 const {
     v4: uuidv4
 } = require('uuid');
+const { sqlRequestDurationMicroseconds } = require('../routes/router');
 
 const { Client } = require('@elastic/elasticsearch')
 const fs = require("fs");
@@ -102,6 +103,9 @@ async function checkValidStatusDate(req, res) {
         currstate = "TODO"
     }
     // console.log(currstate)
+    sqlRequestDurationMicroseconds
+    .labels('sql-logs')
+    .observe(5);
     Tasks.update({
         state: currstate
     }, {
@@ -147,6 +151,9 @@ async function createTask(req, res, next) {
 
     };
     Tasks.create(task).then(async tdata => {
+        sqlRequestDurationMicroseconds
+    .labels('sql-logs')
+    .observe(5);
         req.body.taskId = task.id;
         if (await checkValidStatusDate(req, res)) {
             return;
