@@ -50,11 +50,11 @@ router.get("/healthz", (req, res) => {
 
 //createUser POST Method
 
-router.post("/v2/user", userController.createUser);
+router.post("/v1/user", userController.createUser);
 
 // getUser GET Method (With Authentication)
 
-router.get("/v2/user/self", baseAuthentication() , userController.getUser);
+router.get("/v1/user/self", baseAuthentication() , userController.getUser);
 
 // updateUser PUT Method
 
