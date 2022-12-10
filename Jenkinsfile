@@ -23,7 +23,6 @@ node {
             {
             sh"""
             rm -f *tar.gz
-            rm -rf helm-chart*
             export TAG=`eval curl -s -u $GITHUB_TOKEN:x-oauth-basic https://api.github.com/repos/cyse7125-fall2022-group07/helm-chart/releases/latest | grep 'tag_name' | cut -d '\"' -f 4`
             echo \$TAG
             `curl -u $GITHUB_TOKEN:x-oauth-basic https://github.com/cyse7125-fall2022-group07/helm-chart/archive/refs/tags/\$TAG.tar.gz -LJOH 'Accept: application/octet-stream'`
@@ -45,7 +44,6 @@ node {
             export KOPS_STATE_STORE=${env.KOPS_STATE_STORE}
             kops export kubeconfig ${env.CLUSTER_NAME} --state ${env.KOPS_STATE_STORE} --admin
             helm upgrade --install todo-app --create-namespace --namespace kubernetes-dashboard ./helm-chart*/webapp --set data.DB_PASSWORD=${DB_PASSWORD},data.DB_USER=${DB_USER},data.FLYWAY_ENDPOINT=${env.FLYWAY_ENDPOINT},data.DB_HOST=${env.DB_HOST},data.elastic_endpoint=${env.elastic_endpoint},data.kafka_broker=${env.kafka_broker},data.NODE_ENV=${env.NODE_ENV},data.DB_NAME=${env.DB_NAME},"initContainer.image=${env.image}",image.repository=${env.repository},image.tag=${commit_id},imagePullSecrets=regcred
-            
             """
             }
         }
